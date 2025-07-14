@@ -1,0 +1,38 @@
+<div class="max-w-2/3 mx-auto px-4">
+  <nav class="flex items-center justify-between py-4">
+    <div class="">
+      <h1 class="text-2xl font-bold">Obiente</h1>
+    </div>
+    <div class="relative flex space-x-8 bg-gray-100/10 px-4 py-1 rounded-full border border-gray-300/10 overflow-hidden group text-gray-100/50 font-light">
+      <div class="absolute w-full inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+           style="box-shadow: 0 0 10px -3px rgba(255, 255, 255, 0.15); 
+                  mask: radial-gradient(60% 200% at var(--mouse-x, 50%) var(--mouse-y, 50%), black, transparent 70%);
+                  -webkit-mask: radial-gradient(60% 200% at var(--mouse-x, 50%) var(--mouse-y, 50%), black, transparent 70%);
+                  border: 1px solid rgba(255, 255, 255, 0.2);">
+      </div>
+      <a href="/" class="relative z-10 hover:text-gray-100/75 transition-colors duration-300">Home</a>
+      <a href="https://obiente.cloud" class="relative z-10 hover:text-gray-100/75 transition-colors duration-300">Cloud</a>
+      <a href="#" class="relative z-10 hover:text-gray-100/75 transition-colors duration-300">Contact</a>
+    </div>
+    <div>
+        <a href="#" class="">Login</a>
+    </div>
+  </nav>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const navSection = document.querySelector('.group') as HTMLElement;
+    
+    if (navSection) {
+      navSection.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = navSection.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        
+        navSection.style.setProperty('--mouse-x', `${x}%`);
+        navSection.style.setProperty('--mouse-y', `${y}%`);
+      });
+    }
+  });
+</script>
