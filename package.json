@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "deno run --allow-net --allow-read --allow-env ./dist/server/entry.mjs",
     "astro": "astro"
   },
   "dependencies": {
+    "@deno/astro-adapter": "^0.3.1",
     "@tailwindcss/vite": "^4.1.11",
     "astro": "^5.11.0",
     "tailwindcss": "^4.1.11"
