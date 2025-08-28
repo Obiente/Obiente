@@ -1,15 +1,19 @@
 ---
-const { name, image, description } = Astro.props as {
+const { name, image, description, role } = Astro.props as {
     name: string,
     image: string,
     description: string,
+    role: string
 };
 ---
 
 <div class="flex flex-col gap-y-5 bg-gray-100/5 backdrop-blur-sm border border-gray-300/10 rounded-2xl p-6 hover:bg-gray-100/10 hover:border-gray-300/20 transition-all duration-300 overflow-hidden">
     <img src={image} alt={name} class="w-16 h-16 rounded-full" />
-    <div>
-        <h3 class="text-xl font-semibold text-gray-100 mb-2">{name}</h3>
-        <p class="text-gray-100/75">{description}</p>
+    <div class="flex flex-col justify-between h-full gap-y-4">
+        <div>
+            <h3 class="text-xl font-semibold text-gray-100 mb-2">{name}</h3>
+            <p class="text-gray-100/75">{description}</p>
+        </div>
+        <p class="text-sm bg-gray-100/10 text-gray-100/75 w-fit px-2 rounded-full">{role}</p>
     </div>
 </div>
