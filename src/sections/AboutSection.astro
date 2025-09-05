@@ -1,0 +1,95 @@
+---
+import Section from "../components/Section.astro";
+import Container from "../components/Container.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Typography from "../components/Typography.astro";
+---
+
+<Section id="about" spacing="xl">
+  <Container size="md">
+    <SectionHeader
+      title="About Obiente"
+      subtitle="We're a small team building open-source tools focused on filling people's needs, not our bank accounts."
+    />
+
+    <div class="space-y-16">
+      <!-- What We Do -->
+      <div class="space-y-6">
+        <Typography as="h3" variant="heading">What We Do</Typography>
+        <div class="space-y-6">
+          <Typography variant="body">
+            Unlike corporate companies, we want to prioritize our users
+            rather than profits. We build software and tools that are completely free to
+            use and powered by our community. From distributed monitoring
+            systems to UI component libraries, our projects solve things we
+            actually need without hidden costs or vendor lock-in.
+          </Typography>
+          <Typography variant="body">
+            Every tool we create is designed with transparency at its core. You
+            can see exactly how it works, modify it for your needs, and
+            contribute improvements back to the community. This isn't just about
+            code, it's about building trust through openness.
+          </Typography>
+        </div>
+      </div>
+
+      <!-- Why We Started -->
+      <div class="space-y-6">
+        <Typography as="h3" variant="heading">Why We Started</Typography>
+        <div class="border-l-4 border-gray-400/50 pl-8 mb-8">
+          <blockquote class="text-gray-100/60 italic leading-relaxed space-y-6">
+            <Typography variant="body" class="text-gray-100/60 italic">
+              "I got frustrated seeing so many tools that are way too expensive
+              for what they offer. Built for maximum profit rather than to
+              actually benefit the end user. They lock you in with minimal
+              features and charge premium prices for basic functionality."
+            </Typography>
+            <Typography variant="body" class="text-gray-100/60 italic">
+              "That's why I started Obiente. We needed a better alternative to
+              all the big corporate software that drains your wallet. Sure,
+              there's usually a free option for everything, but they're often
+              incomplete or missing key features. That's the gap I want to
+              fill."
+            </Typography>
+          </blockquote>
+          <Typography variant="small" class="block mt-6">
+            - Yaro Doornberg (Founder & CEO)
+          </Typography>
+        </div>
+        <div class="space-y-6">
+          <Typography variant="body">
+            This frustration with overpriced, feature-limited tools led to
+            Obiente's core mission: creating sustainable alternatives that
+            actually serve users instead of shareholders. We've seen too many
+            promising tools disappear or become inaccessible when companies
+            pivot or get acquired.
+          </Typography>
+          <Typography variant="body">
+            Our goal is simple: build software that remains free and belongs to
+            the people using it. Every project we create starts with something
+            people need, not a market opportunity. That's how we ensure we're
+            building things that actually matter.
+          </Typography>
+        </div>
+      </div>
+      <!-- Philosophy -->
+      <div class="space-y-6">
+        <Typography as="h3" variant="heading">Our Philosophy</Typography>
+        <div class="space-y-6">
+          <Typography variant="body">
+            We believe software should remain free, transparent, and accessible
+            to everyone. That's why all our projects fall under the AGPL-3.0
+            license, ensuring they stay open source forever. We give you full
+            control over your data because it belongs to you.
+          </Typography>
+          <Typography variant="body">
+            Our team brings together developers worldwide to build solutions
+            that benefit everyone. We're not just creating software, we're
+            building a community that drives innovation through shared
+            knowledge.
+          </Typography>
+        </div>
+      </div>
+    </div>
+  </Container>
+</Section>

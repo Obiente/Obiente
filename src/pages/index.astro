@@ -1,9 +1,10 @@
 ---
-import About from "../components/About.astro";
+import AboutSection from "../sections/AboutSection.astro";
+import DataPolicySection from "../sections/DataPolicySection.astro";
+import ProjectsSection from "../sections/ProjectsSection.astro";
+import TeamSection from "../sections/TeamSection.astro";
 import Footer from "../components/Footer.astro";
-import ItemCard from "../components/ItemCard.astro";
 import Navbar from "../components/Navbar.astro";
-import PersonCard from "../components/PersonCard.astro";
 import Welcome from "../components/Welcome.astro";
 import Layout from "../layouts/Layout.astro";
 ---
@@ -11,74 +12,11 @@ import Layout from "../layouts/Layout.astro";
 <Layout>
   <Navbar />
   <Welcome />
-  <div class="py-10 p-8">
-    <div class="max-w-7xl mx-auto space-y-10">
-      <About />
-      <div class="space-y-6">
-        <div class="text-center">
-          <h2 class="text-4xl font-bold text-gray-100 mb-4">Our Projects</h2>
-          <p class="text-lg text-gray-100/75 max-w-2xl mx-auto">
-            Showcasing our latest and greatest work, built by our team members
-            and contributors.
-          </p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <ItemCard
-            title="Uppe."
-            description="Stop relying on single points of failure. Uppe. distributes uptime monitoring across thousands of peers worldwide. When one fails, thousands continue."
-            techs={["Astro", "TypeScript", "Rust"]}
-            cto={{ link: "https://uppe.rs", text: "Learn more" }}
-          />
-          <ItemCard
-            title="MPEG-V"
-            description="Turn audio to video for phonekind"
-            techs={["TypeScript", "Vue"]}
-            cto={{ link: "http://mpeg-v.com/", text: "Add the Bot" }}
-          />
-          <ItemCard
-            title="Obiente UI"
-            description="A modern UI toolkit for building Obiente-flavored web applications."
-            techs={["Vue", "Astro"]}
-            cto={{ link: "https://uppe.rs", text: "Take a look" }}
-          />
-        </div>
-      </div>
-      <div class="space-y-6">
-        <div class="text-center">
-          <h2 class="text-4xl font-bold text-gray-100 mb-4">Meet the Team</h2>
-          <p class="text-lg text-gray-100/75 max-w-2xl mx-auto">
-            Get to know the individuals who are writing the code and shaping the
-            future of our projects.
-          </p>
-        </div>
-        <div class="grid grid-cols-4 gap-8">
-          <PersonCard
-            name="veryCrunchy"
-            image="/people/crunchy.webp"
-            description="No description available"
-            role="Founder & CEO"
-          />
-          <PersonCard
-            name="Espresso"
-            image="/people/espresso.webp"
-            description="No description available"
-            role="Chief Operations Officer"
-          />
-          <PersonCard
-            name="dargy"
-            image="/people/dargy.webp"
-            description="A passionate developer with expertise in Astro and TypeScript."
-            role="Software Engineer"
-          />
-          <PersonCard
-            name="Grey_Stinger"
-            image="/people/grey.webp"
-            description="No description available"
-            role="Software Engineer"
-          />
-        </div>
-      </div>
-    </div>
+  <div class="space-y-0">
+    <AboutSection />
+    <DataPolicySection />
+    <ProjectsSection />
+    <TeamSection />
   </div>
   <Footer />
 </Layout>

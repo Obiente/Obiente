@@ -1,0 +1,43 @@
+---
+import Section from '../components/Section.astro';
+import Container from '../components/Container.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import PersonCard from '../components/PersonCard.astro';
+---
+
+<Section id="team" spacing="lg">
+  <Container size="xl">
+    <SectionHeader 
+      title="Meet the Team" 
+      subtitle="We're a small team that works together on everything. Here's who's behind the projects and keeping things running."
+      align="center"
+    />
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mx-auto">
+      <PersonCard
+        name="veryCrunchy"
+        image="/people/crunchy.webp"
+        description="Handles everything from initial ideas and project management to full-stack development. Drives the vision forward."
+        role="Founder & Executive Director"
+      />
+      <PersonCard
+        name="Espresso"
+        image="/people/espresso.webp"
+        description="Takes care of all the non-development work that keeps everything running smoothly. An invaluable team member."
+        role="Chief Operations Officer"
+      />
+      <PersonCard
+        name="dargy"
+        image="/people/dargy.webp"
+        description="Contributes across the stack with a focus on front-end work. Part of our collaborative development team."
+        role="Front-End Developer"
+      />
+      <PersonCard
+        name="Grey_Stinger"
+        image="/people/grey.webp"
+        description="Brings extensive backend development experience to our collaborative team. Helps build solid foundations."
+        role="Back-End Developer"
+      />
+    </div>
+  </Container>
+</Section>

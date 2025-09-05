@@ -1,47 +1,92 @@
 ---
+import Typography from "./Typography.astro";
+import Card from "./Card.astro";
 import Tooltip from "./Tooltip.astro";
-
 import AstroIcon from "./icons/Astro.astro";
 import TypeScriptIcon from "./icons/TypeScript.astro";
 import RustIcon from "./icons/Rust.astro";
 import VueIcon from "./icons/Vue.astro";
 
-const { title, description, techs, cto } = Astro.props as {
-    title: string,
-    description: string,
-    techs: string[],
-    cto: {
-        link: string,
-        text?: string
-    }
+export interface Props {
+  title: string;
+  description: string;
+  techs: string[];
+  cto: {
+    link: string;
+    text?: string;
+  };
+}
+
+const { title, description, techs, cto } = Astro.props as Props;
+
+const iconMap = {
+  Astro: AstroIcon,
+  TypeScript: TypeScriptIcon,
+  Rust: RustIcon,
+  Vue: VueIcon,
 };
 ---
 
-<div class="group  bg-gray-100/5 backdrop-blur-sm border border-gray-300/10 rounded-2xl p-6 hover:bg-gray-100/10 hover:border-gray-300/20 transition-all duration-300 overflow-hidden">
-    <div class="z-10 flex flex-col justify-between h-full">
-        <span>
-            <h3 class="text-xl font-semibold text-gray-100 mb-2">{title}</h3>
-            <p class="text-gray-100/75 mb-4">{description}</p>
-        </span>
-        <div>
-            <div class="flex items-center gap-3 mb-4">
-                {
-                    techs.map((tech) => (
-                        <Tooltip text={tech}>
-                            {tech === "Astro" && <AstroIcon />}
-                            {tech === "TypeScript" && <TypeScriptIcon />}
-                            {tech === "Rust" && <RustIcon />}
-                            {tech === "Vue" && <VueIcon />}
-                        </Tooltip>
-                    ))
-                }
-            </div>
-            <a href={cto.link} class="inline-flex items-center text-gray-100/75 hover:text-gray-100/90 transition-colors duration-300">
-                {cto.text || "Learn more"}
-                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                </svg>
-            </a>
-        </div>
+<Card>
+  <div class="flex flex-col gap-6 h-full">
+    <div class="flex-1 space-y-4">
+      <Typography
+        variant="heading"
+        class="text-white/90 group-hover:text-white transition-colors duration-300"
+      >
+        {title}
+      </Typography>
+      <Typography
+        variant="body"
+        class="text-gray-300/90 group-hover:text-gray-300 transition-colors duration-300"
+      >
+        {description}
+      </Typography>
     </div>
-</div>
+
+    <div
+      class="flex items-center justify-between pt-4 border-t border-gray-300/10"
+    >
+      <div class="flex items-center gap-3">
+        {
+          techs.map((tech) => {
+            const IconComponent = iconMap[tech as keyof typeof iconMap];
+            return IconComponent ? (
+              <Tooltip text={tech}>
+                <div class="flex items-center justify-center w-8 h-8 bg-gray-100/10 rounded-lg hover:bg-gray-100/20 transition-colors duration-300">
+                  <IconComponent class="w-5 h-5" />
+                </div>
+              </Tooltip>
+            ) : null;
+          })
+        }
+      </div>
+
+      <a
+        href={cto.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="group/cta inline-flex items-center gap-2 text-white/90 hover:text-white transition-all duration-300"
+      >
+        <Typography
+          variant="body"
+          class="group-hover/cta:-translate-x-0.5 transition-transform duration-300 ease-out font-medium"
+        >
+          {cto.text || "Check it out"}
+        </Typography>
+        <svg
+          class="w-4 h-4 group-hover/cta:scale-120 transition-transform duration-300 ease-out"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</Card>

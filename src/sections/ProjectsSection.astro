@@ -1,0 +1,31 @@
+---
+import Section from "../components/Section.astro";
+import Container from "../components/Container.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import ItemCard from "../components/ItemCard.astro";
+---
+
+<Section id="projects" spacing="lg">
+  <Container size="xl">
+    <SectionHeader
+      title="Our Projects"
+      subtitle="Check out what we've been building. Each project started because people needed it."
+      align="center"
+    />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+      <ItemCard
+        title="Uppe."
+        description="Monitoring that doesn't let you down. Eliminate single points of failure with distributed uptime monitoring across thousands of global peers."
+        techs={["Astro", "TypeScript", "Rust"]}
+        cto={{ link: "https://uppe.rs", text: "Learn more" }}
+      />
+      <ItemCard
+        title="Obiente UI"
+        description="A highly themeable, flexible, and scalable UI component system for building modern web applications with consistency and style."
+        techs={["Vue", "Astro"]}
+        cto={{ link: "https://ui.obiente.com", text: "Explore Components" }}
+      />
+    </div>
+  </Container>
+</Section>

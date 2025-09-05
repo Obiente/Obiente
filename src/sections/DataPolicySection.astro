@@ -1,0 +1,55 @@
+---
+import Section from "../components/Section.astro";
+import Container from "../components/Container.astro";
+import SectionHeader from "../components/SectionHeader.astro";
+import Typography from "../components/Typography.astro";
+import DataCard from "../components/DataCard.astro";
+---
+
+<Section id="data-policy" spacing="lg">
+  <Container size="lg">
+    <SectionHeader
+      title="Your Data, Your Control"
+      subtitle="We believe your data belongs to you - always. We don't collect data willy-nilly like other companies. Instead, we only gather what's absolutely necessary to deliver our services, and we give you immediate access to everything we have."
+    />
+
+    <div class="space-y-12">
+      <Typography variant="caption">
+        Forget waiting 15 days for a data export request. Your data is available
+        right there on your dashboard, viewable and downloadable whenever you
+        want it. No waiting, no bureaucracy, no hoops to jump through.
+      </Typography>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <DataCard
+          title="Straight Talk, No BS"
+          description="We'll tell you exactly what we collect, why we collect it, and what we do with it. No legal jargon, no fine print tricks. All anonymized usage data is published publicly."
+        />
+        <DataCard
+          title="Zero Third-Party Sharing"
+          description="We have no desire to share your data. The only person we share your data with is you, the owner. Public data remains public, everything else stays private."
+        />
+        <DataCard
+          title="Instant Data Access"
+          description="We built real-time data access into the platform, because waiting for your own data is just ridiculous. No 15-day waits or export requests required."
+        />
+        <DataCard
+          title="Privacy by Design"
+          description="We build privacy considerations into every feature from the start, not as an afterthought or compliance requirement."
+        />
+      </div>
+
+      <div class="text-center">
+        <Typography variant="small">
+          Read our complete <a
+            href="https://github.com/Obiente/policies/blob/main/DATA_POLICY.md"
+            class="text-blue-400 hover:text-blue-300 underline transition-colors duration-300"
+            target="_blank"
+            rel="noopener noreferrer">Data Policy</a
+          >
+          to see exactly how we handle your information.
+        </Typography>
+      </div>
+    </div>
+  </Container>
+</Section>

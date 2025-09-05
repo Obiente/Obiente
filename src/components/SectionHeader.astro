@@ -1,0 +1,26 @@
+---
+import Typography from './Typography.astro';
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+}
+
+const { 
+  title, 
+  subtitle, 
+  align = 'left'
+} = Astro.props;
+---
+
+<div class={`space-y-4 mb-12 ${align === 'center' ? 'text-center' : ''}`}>
+  <Typography as="h2" variant="title">
+    {title}
+  </Typography>
+  {subtitle && (
+    <Typography variant="caption" class={align === 'center' ? 'max-w-3xl mx-auto' : 'max-w-3xl'}>
+      {subtitle}
+    </Typography>
+  )}
+</div>

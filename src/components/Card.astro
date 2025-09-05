@@ -1,0 +1,38 @@
+---
+// Define card variant types for better autocomplete
+type CardVariant = 'default' | 'dark' | 'transparent';
+type CardPadding = 'sm' | 'md' | 'lg';
+
+export interface Props {
+  variant?: CardVariant;
+  padding?: CardPadding;
+  class?: string;
+  hover?: boolean;
+}
+
+const { 
+  variant = 'default',
+  padding = 'lg',
+  class: className = '',
+  hover = true
+} = Astro.props as Props;
+
+// Use const assertion and satisfies for better type inference
+const variants = {
+  default: 'bg-gray-100/5 backdrop-blur-sm border border-gray-300/10',
+  dark: 'bg-gray-800/50',
+  transparent: 'bg-transparent'
+} as const satisfies Record<CardVariant, string>;
+
+const paddings = {
+  sm: 'p-4',
+  md: 'p-6', 
+  lg: 'p-8'
+} as const satisfies Record<CardPadding, string>;
+
+const hoverClasses = hover ? 'hover:bg-gray-100/10 hover:border-gray-300/20 transition-all duration-300' : '';
+---
+
+<div class={`${variants[variant]} ${paddings[padding]} rounded-2xl overflow-hidden group ${hoverClasses} ${className}`}>
+  <slot />
+</div>

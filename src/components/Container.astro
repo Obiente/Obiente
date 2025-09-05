@@ -1,0 +1,27 @@
+---
+// Define container size types for better autocomplete
+type ContainerSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+
+export interface Props {
+  size?: ContainerSize;
+  class?: string;
+}
+
+const { 
+  size = 'lg',
+  class: className = ''
+} = Astro.props as Props;
+
+// Use const assertion and satisfies for better type inference
+const sizes = {
+  sm: 'max-w-2xl',
+  md: 'max-w-4xl', 
+  lg: 'max-w-5xl',
+  xl: 'max-w-7xl',
+  full: 'max-w-full'
+} as const satisfies Record<ContainerSize, string>;
+---
+
+<div class={`${sizes[size]} mx-auto ${className}`}>
+  <slot />
+</div>

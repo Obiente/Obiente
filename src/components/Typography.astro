@@ -1,0 +1,35 @@
+---
+// Define allowed HTML tags for semantic elements
+type HTMLTag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div' | 'strong' | 'em' | 'small';
+
+// Define typography variants with proper type constraints
+type TypographyVariant = 'hero' | 'title' | 'subtitle' | 'heading' | 'subheading' | 'body' | 'caption' | 'small';
+
+export interface Props {
+  as?: HTMLTag;
+  variant?: TypographyVariant;
+  class?: string;
+}
+
+const { 
+  as: Tag = 'p', 
+  variant = 'body',
+  class: className = ''
+} = Astro.props as Props;
+
+// Use const assertion for better type inference and autocomplete
+const variants = {
+  hero: 'text-5xl font-bold text-gray-100',
+  title: 'text-4xl font-bold text-gray-100', 
+  subtitle: 'text-3xl font-bold text-gray-100',
+  heading: 'text-2xl font-semibold text-gray-100',
+  subheading: 'text-xl font-semibold text-gray-100',
+  body: 'text-gray-100/75 leading-relaxed',
+  caption: 'text-lg text-gray-100/75 leading-relaxed',
+  small: 'text-sm text-gray-100/60'
+} as const satisfies Record<TypographyVariant, string>;
+---
+
+<Tag class={`${variants[variant]} ${className}`}>
+  <slot />
+</Tag>
