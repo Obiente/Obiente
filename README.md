@@ -1,54 +1,90 @@
-# Astro Starter Kit: Basics
+# Obiente website
+
+This repository contains the source for [obiente.org](https://obiente.org).
+The site introduces Obiente, the software we are building, the people behind
+it, and the ways others can contribute. Obiente builds open-source tools for
+people, not profit.
+
+The site is built with [Astro](https://astro.build), Tailwind CSS, and the Astro
+Node adapter. It is rendered as a standalone Node.js server rather than a
+static export.
+
+## Run it locally
+
+You need an active Node.js LTS release and pnpm. Corepack can provide the pnpm
+command.
 
 ```sh
-deno create astro@latest -- --template basics
+corepack enable
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+The development server is available at <http://localhost:4321> and reloads as
+files change.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Commands
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+| Command | Purpose |
+| --- | --- |
+| `pnpm dev` | Start the local development server |
+| `pnpm build` | Build the standalone production server in `dist/` |
+| `pnpm preview` | Run the production build locally |
+| `pnpm astro -- --help` | Show the available Astro CLI commands |
 
-## 🚀 Project Structure
+## Routes
 
-Inside of your Astro project, you'll see the following folders and files:
+| Route | Purpose |
+| --- | --- |
+| `/` | Obiente's projects, mission, team, and contribution information |
+| `/contact` | Contact options and project links |
+| `/join` | Resolve and redirect to the current Obiente Discord invitation |
+
+Requests for `obiente.com`, `www.obiente.com`, and `www.obiente.org` are
+permanently redirected to the matching path on `https://obiente.org`.
+
+## Project structure
 
 ```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+public/                 Static images, people, and brand assets
+src/components/         Reusable layout and typography components
+src/components/icons/   Language, tool, and platform icons
+src/layouts/            Shared document metadata and structured data
+src/pages/              Public routes
+src/sections/           Homepage sections and their content
+src/global.css          Global styles and shared visual foundations
+src/middleware.ts       Canonical-domain redirects
+astro.config.mjs        Astro, Tailwind, Node adapter, and canonical site config
 ```
 
-To learn more about the folder structure of an Astro project, refer to
-[our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Most public content is kept close to the layout that presents it:
 
-## 🧞 Commands
+- Project names, descriptions, links, technologies, and platforms are in
+  `src/sections/ProjectsSection.astro`.
+- The current member roster is in `src/sections/TeamSection.astro`.
+- The main vision statement is in `src/components/Welcome.astro`.
+- Longer mission and philosophy copy is in
+  `src/sections/AboutSection.astro`.
+- Page titles, canonical URLs, social metadata, and organization structured
+  data are in `src/layouts/Layout.astro`.
 
-All commands are run from the root of the project, from a terminal:
+When project status, member information, or external links change, update the
+relevant section with them.
 
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `deno install`         | Installs dependencies                            |
-| `deno dev`             | Starts local dev server at `localhost:4321`      |
-| `deno build`           | Build your production site to `./dist/`          |
-| `deno preview`         | Preview your build locally, before deploying     |
-| `deno astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `deno astro -- --help` | Get help using the Astro CLI                     |
+## Production build
 
-## 👀 Want to learn more?
+Run the same build used by the container before publishing changes:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into
-our [Discord server](https://astro.build/chat).
+```sh
+pnpm build
+```
+
+The included `Dockerfile` installs dependencies from the lockfile, builds the
+site, and starts the standalone server from `dist/server/entry.mjs`.
+
+```sh
+docker build -t obiente-website .
+docker run --rm -p 4321:4321 obiente-website
+```
+
+The server reads `HOST` and `PORT`; the container defaults to `0.0.0.0:4321`.
