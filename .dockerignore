@@ -1,0 +1,14 @@
+.astro
+.git
+.github
+.idea
+dist
+docs
+node_modules
+
+.DS_Store
+*.log
+
+.env
+.env.*
+!.env.example

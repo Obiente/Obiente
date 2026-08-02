@@ -1,0 +1,67 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import Section from "../../components/Section.astro";
+import Container from "../../components/Container.astro";
+---
+
+<Layout
+  title="Blog - Obiente"
+  description="Technical investigations, project decisions, and lessons from building open-source software at Obiente."
+  keywords="Obiente blog, open source, software supply chain, container security"
+>
+  <Navbar />
+  <main id="main-content">
+    <Section spacing="xl">
+      <Container size="xl">
+        <header class="max-w-4xl pb-16 pt-8">
+          <p class="mb-4 text-sm font-semibold uppercase tracking-[0.16em] text-violet-300">
+            Obiente blog
+          </p>
+          <h1 class="text-5xl font-bold text-gray-100 md:text-7xl">
+            What we learn in public
+          </h1>
+          <p class="mt-6 max-w-2xl text-lg leading-relaxed text-gray-100/60">
+            Technical investigations, project decisions, and practical lessons
+            from maintaining open-source software.
+          </p>
+        </header>
+
+        <div class="border-t border-gray-100/20">
+          <article class="grid gap-6 border-b border-gray-100/15 py-10 md:grid-cols-[0.45fr_1.55fr_auto] md:items-start">
+            <div class="text-sm text-gray-100/55">
+              <time datetime="2026-08-02T00:00:00+02:00">August 2, 2026</time>
+              <p class="mt-2">15 minute read</p>
+            </div>
+            <div>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-amber-300">
+                Supply-chain review
+              </p>
+              <h2 class="text-2xl font-semibold text-gray-100 md:text-3xl">
+                <a
+                  href="/blog/soldevelo-bitnami-container-review"
+                  class="transition-colors hover:text-violet-200"
+                >
+                  A security review of SolDevelo's Bitnami replacement images
+                </a>
+              </h2>
+              <p class="mt-4 max-w-3xl text-sm leading-7 text-gray-100/60">
+                A catalog-wide review of 15 image families found no malware
+                indicators, but did find provenance gaps, mutable tags, a Kafka
+                publication defect, and bulk vendor outreach.
+              </p>
+            </div>
+            <a
+              href="/blog/soldevelo-bitnami-container-review"
+              class="text-sm text-violet-300 underline decoration-violet-300/40 underline-offset-4"
+            >
+              Read the report ->
+            </a>
+          </article>
+        </div>
+      </Container>
+    </Section>
+  </main>
+  <Footer />
+</Layout>

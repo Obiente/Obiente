@@ -1,0 +1,157 @@
+---
+export interface Props {
+  searchHref: string;
+}
+
+const { searchHref } = Astro.props;
+---
+
+<figure class="evidence-figure" aria-labelledby="outreach-snapshot-caption">
+  <svg
+    class="campaign-bar"
+    viewBox="0 0 1000 52"
+    role="img"
+    aria-labelledby="outreach-snapshot-title outreach-snapshot-description"
+    preserveAspectRatio="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title id="outreach-snapshot-title">Pull-request campaign status</title>
+    <desc id="outreach-snapshot-description">
+      Of 375 pull requests, 321 were open, 32 were closed without being merged,
+      and 22 were merged in the August 2, 2026 snapshot.
+    </desc>
+    <defs>
+      <clipPath id="campaign-bar-clip">
+        <rect x="1" y="1" width="998" height="50" rx="7" />
+      </clipPath>
+    </defs>
+    <g clip-path="url(#campaign-bar-clip)">
+      <rect class="campaign-open" x="1" y="1" width="854.3" height="50" />
+      <rect class="campaign-closed" x="855.3" y="1" width="85.2" height="50" />
+      <rect class="campaign-merged" x="940.5" y="1" width="58.5" height="50" />
+    </g>
+    <rect class="campaign-outline" x="1" y="1" width="998" height="50" rx="7" />
+  </svg>
+
+  <ul class="campaign-legend" aria-label="Campaign status values">
+    <li>
+      <span class="legend-mark legend-open" aria-hidden="true"></span>
+      <span><strong>321</strong> open <small>85.6%</small></span>
+    </li>
+    <li>
+      <span class="legend-mark legend-closed" aria-hidden="true"></span>
+      <span><strong>32</strong> closed, not merged <small>8.5%</small></span>
+    </li>
+    <li>
+      <span class="legend-mark legend-merged" aria-hidden="true"></span>
+      <span><strong>22</strong> merged <small>5.9%</small></span>
+    </li>
+  </ul>
+
+  <figcaption id="outreach-snapshot-caption">
+    Mutually exclusive states derived from the
+    <a href={searchHref}>375-PR GitHub search snapshot</a> on August 2, 2026.
+    The 22 merged PRs are part of GitHub's 54 closed results.
+  </figcaption>
+</figure>
+
+<style>
+  .evidence-figure {
+    margin-top: 2rem;
+    max-width: 48rem;
+    border-top: 1px solid rgb(243 244 246 / 0.2);
+    border-bottom: 1px solid rgb(243 244 246 / 0.14);
+    padding: 1.5rem 0 1rem;
+  }
+
+  .campaign-bar {
+    display: block;
+    width: 100%;
+    height: 2.25rem;
+  }
+
+  .campaign-open,
+  .legend-open {
+    fill: rgb(139 92 246);
+    background: rgb(139 92 246);
+  }
+
+  .campaign-closed,
+  .legend-closed {
+    fill: rgb(100 116 139);
+    background: rgb(100 116 139);
+  }
+
+  .campaign-merged,
+  .legend-merged {
+    fill: rgb(245 158 11);
+    background: rgb(245 158 11);
+  }
+
+  .campaign-outline {
+    fill: none;
+    stroke: rgb(243 244 246 / 0.2);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .campaign-legend {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .campaign-legend li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 0.55rem;
+    margin: 0;
+    color: rgb(243 244 246 / 0.72);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .campaign-legend strong {
+    color: rgb(243 244 246);
+    font-size: 1rem;
+    font-weight: 650;
+  }
+
+  .campaign-legend small {
+    display: block;
+    color: rgb(243 244 246 / 0.5);
+    font-size: 0.75rem;
+  }
+
+  .legend-mark {
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-top: 0.34rem;
+    border-radius: 999px;
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    color: rgb(243 244 246 / 0.55);
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  figcaption a {
+    color: rgb(196 181 253);
+    text-decoration: underline;
+    text-decoration-color: rgb(196 181 253 / 0.4);
+    text-underline-offset: 0.2rem;
+  }
+
+  @media (max-width: 40rem) {
+    .campaign-legend {
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+  }
+</style>

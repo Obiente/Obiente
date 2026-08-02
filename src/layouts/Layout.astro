@@ -5,12 +5,20 @@ export interface Props {
   title?: string;
   description?: string;
   image?: string;
+  type?: "website" | "article";
+  publishedTime?: string;
+  modifiedTime?: string;
+  keywords?: string;
 }
 
 const {
   title = "Obiente - Built for People, Not Profit",
   description = "Obiente builds free, open-source tools that serve people instead of shareholders, including Nextcloud Native, Obiente Cloud, distributed monitoring, and interface tools.",
   image = "/image.png",
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  keywords = "Obiente, open source, Nextcloud Native, Nextcloud client, Obiente Cloud, self-hosting, distributed monitoring, user control",
 } = Astro.props;
 
 const canonicalURL = Astro.site
@@ -34,12 +42,18 @@ const socialImageURL = Astro.site ? new URL(image, Astro.site) : image;
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={socialImageURL} />
     <meta property="og:site_name" content="Obiente" />
+    {type === "article" && publishedTime && (
+      <meta property="article:published_time" content={publishedTime} />
+    )}
+    {type === "article" && modifiedTime && (
+      <meta property="article:modified_time" content={modifiedTime} />
+    )}
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -53,7 +67,7 @@ const socialImageURL = Astro.site ? new URL(image, Astro.site) : image;
     <meta name="author" content="Obiente" />
     <meta
       name="keywords"
-      content="Obiente, open source, Nextcloud Native, Nextcloud client, Obiente Cloud, self-hosting, distributed monitoring, user control"
+      content={keywords}
     />
 
     <link rel="preconnect" href="https://fonts.bunny.net" />

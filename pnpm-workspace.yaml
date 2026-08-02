@@ -1,0 +1,7 @@
+packages:
+  - .
+
+allowBuilds:
+  "@tailwindcss/oxide@4.1.11": true
+  "esbuild@0.25.8": true
+  "sharp@0.33.5": true

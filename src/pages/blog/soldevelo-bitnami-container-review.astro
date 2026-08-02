@@ -1,0 +1,1100 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Navbar from "../../components/Navbar.astro";
+import Footer from "../../components/Footer.astro";
+import ReviewScopeFigure from "../../components/report/ReviewScopeFigure.astro";
+import OutreachSnapshotFigure from "../../components/report/OutreachSnapshotFigure.astro";
+
+const publishedTime = "2026-08-02T00:00:00+02:00";
+const canonicalUrl = "https://obiente.org/blog/soldevelo-bitnami-container-review";
+const title = "A security review of SolDevelo's Bitnami replacement images";
+const description =
+  "A catalog-wide source, image, provenance, and outreach review of 15 Bitnami-derived container image families published by SolDevelo.";
+const reviewedRevision = "f570f5d6786a6e9fd0f531b29105e8b4ea9b88e8";
+
+const sources = {
+  campaignSearch:
+    "https://github.com/search?q=author%3Ajkondrat-sd+is%3Apr&type=pullrequests",
+  contributor: "https://github.com/jkondrat-sd",
+  contributorRepositories: "https://github.com/jkondrat-sd?tab=repositories",
+  contributorRepositoriesApi:
+    "https://api.github.com/users/jkondrat-sd/repos?per_page=100&sort=updated&direction=desc",
+  githubPolicy:
+    "https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies#4-spam-and-inauthentic-activity-on-github",
+  bitnamiAnnouncement: "https://github.com/bitnami/containers/issues/83267",
+  bitnamiSource: "https://github.com/bitnami/containers",
+  soldeveloProduct:
+    "https://soldevelo.com/services/bitnami-container-images-maintained-by-soldevelo/",
+  soldeveloSource: "https://github.com/SolDevelo/containers",
+  soldeveloRevision:
+    `https://github.com/SolDevelo/containers/commit/${reviewedRevision}`,
+  catalogTree:
+    `https://github.com/SolDevelo/containers/tree/${reviewedRevision}/soldevelo`,
+  buildWorkflow:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/.github/workflows/build-and-publish.yml`,
+  syncWorkflow:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/.github/workflows/sync-upstream.yml`,
+  syncScript:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/scripts/sync-upstream.sh`,
+  kafka39Dockerfile:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/soldevelo/kafka/3.9/debian-12/Dockerfile`,
+  kafkaWrapper:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/soldevelo/kafka/4.3/debian-12/rootfs/etc/kafka/docker/run`,
+  kafkaRun:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/soldevelo/kafka/4.3/debian-12/rootfs/opt/bitnami/scripts/kafka/run.sh`,
+  mariadbHealthcheck:
+    `https://github.com/SolDevelo/containers/blob/${reviewedRevision}/soldevelo/mariadb/13.0/debian-12/rootfs/opt/bitnami/scripts/libmariadb.sh#L1380-L1395`,
+  dockerHubNamespace: "https://hub.docker.com/u/soldevelo",
+  trivyRelease: "https://github.com/aquasecurity/trivy/releases/tag/v0.72.0",
+};
+
+const sourceUrl = (family: string) =>
+  `${sources.catalogTree}/${family}`;
+const dockerHubApiUrl = (family: string) =>
+  `https://hub.docker.com/v2/repositories/soldevelo/${family}/`;
+const dockerHubTagApiUrl = (family: string, tag: string) =>
+  `https://hub.docker.com/v2/repositories/soldevelo/${family}/tags/${tag}`;
+
+const catalog = [
+  ["jmx-exporter", "1", "1.6.0", "amd64, arm64", "303cf2c2c7233de4ae7ed1e96fe34b5cc12013f0a6192a20ee98ad57c09b432f"],
+  ["kafka", "3.4, 3.7, 3.9, 4.0-4.3", "4.3.1", "amd64, arm64", "1538bd0f8fe1281df475e57a90b969ab622871415c3d3f75294c8c4d8be10f13"],
+  ["kubectl", "1.33, 1.34, 1.36", "1.36.3", "amd64, arm64", "a308fd7c99d41fd3289be9b25842e4a20bdad6907916ee86b0754b7912f1bad4"],
+  ["mariadb", "12.2, 12.3, 13.0", "13.0.1", "amd64, arm64", "d2ca8842aa050de23a71e65b39031ef426ae04aa2f2314c2ebbc807feb1fcbfe"],
+  ["mongodb", "8.2, 8.3", "8.3.7", "amd64", "3a9d9dbb40da2a0f1d6c10429b2ca42bba8777d2fe5ee211a29cd0067d5a2028"],
+  ["os-shell", "12", "12", "amd64, arm64", "7a1e90bc74f01a61b63c0a46d367f6462340873778af972148d5540ecd4b3b23"],
+  ["pgpool", "4", "4.7.2", "amd64, arm64", "37c172fffdf97b0ad37c191a4afe36763fb1f295ab8e7b0641444e910a9cf37d"],
+  ["postgres-exporter", "0", "0.20.1", "amd64, arm64", "7394dd9119890866414246c2a18b0f61372b6a1463cff71d82622031f1e36022"],
+  ["postgresql", "18", "18.4.0", "amd64, arm64", "83c095844f257ca5595b77faa181c04f1b6ed47cbe5495693d6f93316ca54434"],
+  ["postgresql-repmgr", "12-18", "18.4.0", "amd64, arm64", "19b67ec59ea096d0f6c62006c2260a6da94d4965ab67c2ce4c235a672779b80b"],
+  ["prometheus", "3.0, 3.11-3.13", "3.13.2", "amd64, arm64", "1da85660d87494d31a5c5ebf8657e5f09a0be53e9d3ccc62e1ec7a0a30b7f23e"],
+  ["rabbitmq", "4.1, 4.3", "4.3.4", "amd64, arm64", "eb7d5a79521920007a32ae008efa9d83cbd3d5e18e0e93c9c6c5920b18b0953d"],
+  ["redis", "6.2, 7.0, 8.6, 8.8", "8.8.1", "amd64, arm64", "b891b72ac3bd772c9105c4fdd9cf1b652a67023c71046bedd8d2e02f3d5254a6"],
+  ["schema-registry", "8.2, 8.3", "8.3.0", "amd64, arm64", "7b5006857fd39e88cb02b5625db5bccfdaa93aca225615ce07aba175a92e0064"],
+  ["zookeeper", "3.9", "3.9.5", "amd64, arm64", "27ae279832e8d562901d64b5b9d6f52596483d3f717253e76e16e413d1a7e816"],
+];
+
+const currentTagByFamily = new Map(
+  catalog.map(([family, , currentVersion]) => [family, currentVersion]),
+);
+
+const contents = [
+  ["#short-version", "Short version"],
+  ["#scope", "Scope and limits"],
+  ["#published-images", "Catalog inventory"],
+  ["#malware-review", "Malware review"],
+  ["#upstream-comparison", "Source lineage"],
+  ["#notable-differences", "Material differences"],
+  ["#provenance", "Distribution security"],
+  ["#static-scans", "Published-layer scans"],
+  ["#campaign", "Outreach pattern"],
+  ["#recommendations", "For maintainers"],
+  ["#methodology", "Reproduction"],
+  ["#sources", "Primary sources"],
+  ["#corrections", "Corrections"],
+];
+
+const findings = [
+  ["Catalog reviewed", "15 image families, 40 versioned Dockerfiles, 1,080 source and runtime files", sources.catalogTree],
+  ["Malware indicators", "None found within the stated static-analysis scope", "#malware-review"],
+  ["Current published images", "15 current images and 29 Linux platform manifests inspected", "#published-images"],
+  ["Runtime identity", "All 29 current platform manifests declare UID 1001", "#published-images"],
+  ["Signatures and attestations", "None discoverable for any current catalog digest", "#provenance"],
+  ["Publication defect", "Kafka's current manifests mix OCI and Docker media types", "#notable-differences"],
+  ["Outreach snapshot", "375 PRs from one contributor account; 22 were merged", sources.campaignSearch],
+];
+
+const scanRows = [
+  ["jmx-exporter", "211 / 211", "17 / 17", "29 / 29", "72 / 72", "81 / 81", "12 / 12", "0 / 0"],
+  ["kafka", "288 / 288", "17 / 17", "41 / 41", "96 / 96", "122 / 122", "12 / 12", "0 / 0"],
+  ["kubectl", "306 / 306", "18 / 18", "41 / 41", "103 / 103", "132 / 132", "12 / 12", "0 / 0"],
+  ["mariadb", "220 / 220", "18 / 18", "30 / 30", "73 / 73", "87 / 87", "12 / 12", "0 / 0"],
+  ["mongodb", "267", "17", "37", "87", "114", "12", "0"],
+  ["os-shell", "294 / 294", "17 / 17", "41 / 41", "96 / 96", "128 / 128", "12 / 12", "0 / 0"],
+  ["pgpool", "254 / 254", "18 / 18", "32 / 32", "73 / 73", "119 / 119", "12 / 12", "0 / 0"],
+  ["postgres-exporter", "215 / 215", "17 / 17", "29 / 29", "72 / 72", "85 / 85", "12 / 12", "0 / 0"],
+  ["postgresql", "262 / 262", "19 / 19", "30 / 30", "86 / 86", "115 / 115", "12 / 12", "0 / 0"],
+  ["postgresql-repmgr", "308 / 308", "19 / 19", "37 / 37", "101 / 101", "139 / 139", "12 / 12", "0 / 0"],
+  ["prometheus", "0 / 0", "0 / 0", "0 / 0", "0 / 0", "0 / 0", "0 / 0", "0 / 0"],
+  ["rabbitmq", "310 / 310", "17 / 17", "41 / 41", "104 / 104", "136 / 136", "12 / 12", "0 / 0"],
+  ["redis", "216 / 216", "17 / 17", "29 / 29", "72 / 72", "86 / 86", "12 / 12", "0 / 0"],
+  ["schema-registry", "215 / 215", "17 / 17", "29 / 29", "72 / 72", "85 / 85", "12 / 12", "6 / 6 samples"],
+  ["zookeeper", "293 / 293", "18 / 18", "41 / 41", "97 / 97", "125 / 125", "12 / 12", "0 / 0"],
+];
+---
+
+<Layout
+  title={`${title} - Obiente`}
+  description={description}
+  type="article"
+  publishedTime={publishedTime}
+  modifiedTime={publishedTime}
+  keywords="SolDevelo, Bitnami, container security, supply chain, Docker images, provenance, GitHub outreach"
+>
+  <a class="skip-link" href="#report-content">Skip to report</a>
+  <Navbar />
+  <main id="report-content">
+    <article>
+      <header class="border-b border-gray-100/15 px-8 pb-16 pt-20 md:pb-20 md:pt-28">
+        <div class="mx-auto max-w-5xl">
+          <a
+            href="/blog"
+            class="text-sm text-violet-300 underline decoration-violet-300/40 underline-offset-4"
+          >
+            Obiente blog
+          </a>
+          <p class="mt-10 text-sm font-semibold uppercase tracking-[0.16em] text-amber-300">
+            Supply-chain review
+          </p>
+          <h1 class="mt-5 max-w-4xl text-4xl font-bold leading-tight text-gray-100 md:text-7xl">
+            A security review of SolDevelo's Bitnami replacement images
+          </h1>
+          <p class="article-lede mt-7 max-w-3xl text-lg leading-8 text-gray-100/65 md:text-xl">
+            We found <a href={sources.soldeveloProduct}>a real vendor</a>,
+            <a href={sources.catalogTree}>a catalog closely derived from Bitnami</a>,
+            and <a href="#malware-review">no malware indicators in the reviewed material</a>.
+            We also found <a href="#provenance">catalog-wide provenance gaps</a>,
+            one <a href="#notable-differences">published-image compatibility defect</a>,
+            and <a href={sources.campaignSearch}>hundreds of similar pull requests</a>.
+          </p>
+          <div class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-100/55">
+            <time datetime={publishedTime}>Published August 2, 2026</time>
+            <span>15 minute read</span>
+            <span>Research snapshot: August 2, 2026</span>
+            <span>By Obiente</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="px-8 py-16 md:py-24">
+        <div class="mx-auto grid max-w-7xl gap-14 lg:grid-cols-[minmax(0,1fr)_17rem]">
+          <div class="report-body min-w-0 max-w-4xl">
+            <details class="mobile-contents lg:hidden">
+              <summary>In this report</summary>
+              <ol>
+                {contents.map(([href, label]) => (
+                  <li><a href={href}>{label}</a></li>
+                ))}
+              </ol>
+            </details>
+
+            <section id="short-version" aria-labelledby="short-version-title">
+              <p class="eyebrow">The short version</p>
+              <h2 id="short-version-title">The decision in 60 seconds</h2>
+              <div class="verdict">
+                <p class="verdict-label">Verdict</p>
+                <p class="verdict-text">
+                  This review found no evidence that the
+                  <a href={sources.catalogTree}>15 Bitnami-derived SolDevelo image families</a>
+                  are malware. That is not enough to trust a moving image tag. We
+                  cannot prove that the
+                  <a href={sources.dockerHubNamespace}>published Docker Hub bytes</a>
+                  match the public source, and the current publications have no
+                  discoverable signature, provenance, or SBOM attestation. Do not
+                  label the images malware without new evidence, and do not merge
+                  or deploy them by mutable tag.
+                </p>
+              </div>
+
+              <div class="quick-summary">
+                <div class="summary-column">
+                  <h3>Most important findings</h3>
+                  <ul>
+                    <li>
+                      <a href="#malware-review">No malicious behavior was identified</a>
+                      in 1,080 public source and runtime files, current image
+                      configurations, or the static secret scans. This is negative
+                      evidence, not proof that every published byte is safe.
+                    </li>
+                    <li>
+                      <a href="#provenance">None of the 15 current catalog digests had a discoverable signature, SBOM, or provenance attestation</a>,
+                      and Docker Hub tag immutability is disabled across the catalog.
+                    </li>
+                    <li>
+                      <a href="#notable-differences">The current Kafka image has a mixed-media manifest defect</a>
+                      that strict clients can reject. Kafka also adds Testcontainers
+                      behavior, and MariaDB 13 relaxes certificate verification for
+                      its local healthcheck.
+                    </li>
+                    <li>
+                      <a href="#static-scans">Every Debian-based current image had OS-package vulnerability findings</a>.
+                      Prometheus uses a scratch final image and had no OS package
+                      inventory. Scanner severity alone does not establish exploitability.
+                    </li>
+                    <li>
+                      <a href={sources.campaignSearch}>The outreach is a 375-PR campaign from an account affiliated with the image publisher</a>;
+                      22 were merged in this snapshot. Treat it as vendor outreach,
+                      not an independent recommendation.
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="summary-column summary-actions">
+                  <h3>What maintainers should do</h3>
+                  <ol>
+                    <li>
+                      <strong>Open change:</strong> do not merge a moving
+                      <code>:latest</code>, major, or minor tag. Make the migration a
+                      maintainer-controlled dependency decision.
+                    </li>
+                    <li>
+                      <strong>Already deployed:</strong> record the exact digest that
+                      was actually pulled before changing anything. Do not assume
+                      compromise solely from use of this catalog.
+                    </li>
+                    <li>
+                      <strong>Still evaluating:</strong> pin an exact digest, scan that
+                      digest under your own policy, and test upgrades, persistence,
+                      clustering, backup, restore, and failure modes.
+                    </li>
+                    <li>
+                      <strong>Long-term use:</strong> prefer a project-controlled build
+                      or request signed releases, an attached SBOM, provenance,
+                      immutable tags, and digest-pinned build dependencies.
+                    </li>
+                  </ol>
+                </div>
+              </div>
+
+              <p>
+                The <a href={sources.bitnamiAnnouncement}>Bitnami availability change</a>
+                created a genuine maintenance problem. SolDevelo responded with
+                <a href={sources.soldeveloProduct}>a commercial maintenance offering</a>,
+                <a href={sources.soldeveloSource}>public source</a>, and images in
+                <a href={sources.dockerHubNamespace}>its Docker Hub namespace</a>.
+                A contributor whose <a href={sources.contributor}>profile identifies SolDevelo as the company</a>
+                then opened <a href={sources.campaignSearch}>hundreds of replacement PRs</a>.
+                Those PRs should be understood as vendor outreach, not independent
+                security review.
+              </p>
+
+              <div
+                class="table-scroll mt-10 overflow-x-auto rounded-2xl border border-gray-100/15"
+                role="region"
+                aria-label="Review summary table"
+                tabindex="0"
+              >
+                <table>
+                  <tbody>
+                    {findings.map(([question, answer, source]) => (
+                      <tr>
+                        <th scope="row"><a href={source}>{question}</a></th>
+                        <td>{answer}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section id="scope" aria-labelledby="scope-title">
+              <p class="eyebrow">Scope and limits</p>
+              <h2 id="scope-title">Every advertised Bitnami-derived image family</h2>
+              <p>
+                We reviewed the complete <a href={sources.catalogTree}><code>soldevelo/</code> source tree</a>
+                at commit <a href={sources.soldeveloRevision}><code>{reviewedRevision}</code></a>:
+                15 product families, 40 versioned Dockerfiles, and 1,080 files.
+                For the published side, we inspected the current <code>latest</code>
+                digest for every family and all 29 Linux platform manifests those
+                digests referenced. MongoDB was the only current image with no
+                arm64 manifest.
+              </p>
+              <ReviewScopeFigure catalogHref={sources.catalogTree} />
+              <p>
+                This scope covers all Bitnami-derived image families advertised in
+                the source catalog. It does not cover every historical Docker Hub
+                tag, five unrelated image repositories in the same namespace, or
+                the namespace's Helm chart repositories. A historical tag can have
+                different bytes and must be reviewed by its exact digest.
+              </p>
+              <p>
+                We did not execute any image. We inspected source, build paths,
+                registry manifests, configuration, and layers statically. Static
+                review can expose suspicious behavior and supply-chain weaknesses;
+                it cannot prove the absence of deliberately concealed behavior or
+                establish runtime safety in every deployment.
+              </p>
+            </section>
+
+            <section id="published-images" aria-labelledby="published-images-title">
+              <p class="eyebrow">Catalog inventory</p>
+              <h2 id="published-images-title">The exact current digests reviewed</h2>
+              <p>
+                Each family name below links to its
+                <a href={sources.catalogTree}>reviewed source</a>; each current version
+                links to the corresponding <a href={sources.dockerHubNamespace}>Docker Hub tag record</a>.
+                The full SHA-256 value is the current multi-platform index digest,
+                except MongoDB, where it is the single amd64 manifest digest.
+                These are observations from August 2, 2026, not permanent identifiers
+                for a moving tag.
+              </p>
+              <div
+                class="table-scroll mt-8 overflow-x-auto rounded-2xl border border-gray-100/15"
+                role="region"
+                aria-label="Reviewed image catalog and exact digests"
+                tabindex="0"
+              >
+                <table class="catalog-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Family</th>
+                      <th scope="col">Source lines</th>
+                      <th scope="col">Current</th>
+                      <th scope="col">Platforms</th>
+                      <th scope="col">Reviewed digest</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {catalog.map(([family, sourceVersions, currentVersion, platforms, digest]) => (
+                      <tr>
+                        <th scope="row"><a href={sourceUrl(family)}>{family}</a></th>
+                        <td>{sourceVersions}</td>
+                        <td><a href={dockerHubTagApiUrl(family, currentVersion)}>{currentVersion}</a></td>
+                        <td>{platforms}</td>
+                        <td><code>sha256:{digest}</code></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                All 29 configurations declared the expected product entrypoint or
+                command and <code>USER 1001</code>. We found no surprise shell,
+                startup URL, privileged user, or unrelated executable in those
+                configurations.
+              </p>
+            </section>
+
+            <section id="malware-review" aria-labelledby="malware-review-title">
+              <p class="eyebrow">Malware review</p>
+              <h2 id="malware-review-title">No malicious behavior was identified in the reviewed source</h2>
+              <p>
+                We searched all 1,080 files for miner and wallet references,
+                reverse shells, credential theft, SSH persistence, metadata-service
+                access, encoded payload execution, <code>curl | sh</code> patterns,
+                Docker socket access, container-escape mechanisms, and unexplained
+                outbound runtime connections. We then read every match and every
+                source file that differed from its Bitnami counterpart. No malicious
+                behavior was identified.
+              </p>
+              <p>
+                The stronger-looking matches were inherited, explainable runtime
+                mechanisms: a generic Bitnami service helper can create cron
+                definitions; PostgreSQL's NSS wrapper and MariaDB's allocator can
+                use <code>LD_PRELOAD</code>; and shared shell libraries contain
+                controlled <code>eval</code> calls. The relevant code was identical
+                to historical or current <a href={sources.bitnamiSource}>Bitnami source</a>,
+                aside from branding or whitespace in a few files.
+              </p>
+              <p>
+                We found no active outbound network call in the product runtime
+                scripts. Downloads happen during image builds and resolve to
+                Bitnami's Stacksmith host, Apache's Kafka download host for Kafka
+                3.9, or Debian package infrastructure through the base image.
+              </p>
+              <div class="callout">
+                <p>
+                  "No indicators found" is intentionally narrower than "safe."
+                  Because <a href="#provenance">published artifacts are not signed
+                  or attested</a>, public source review cannot cryptographically
+                  account for every byte served from Docker Hub.
+                </p>
+              </div>
+            </section>
+
+            <section id="upstream-comparison" aria-labelledby="upstream-comparison-title">
+              <p class="eyebrow">Source lineage</p>
+              <h2 id="upstream-comparison-title">The catalog is substantially derived from Bitnami</h2>
+              <p>
+                We matched 38 of the 40 versioned build roots to historical
+                <a href={sources.bitnamiSource}><code>bitnami/containers</code> revisions</a>
+                with the same component version. Within those matched roots, 726
+                of 735 scoped files had an upstream counterpart: 632 were
+                byte-identical and 94 differed. Nine files existed only in the
+                SolDevelo tree. We reviewed the differences, not merely the matching
+                percentage.
+              </p>
+              <p>
+                Most differences were copyright and vendor labels, blank lines,
+                newer component metadata, or later shared-helper revisions. The
+                <a href={sources.syncWorkflow}>upstream-sync workflow</a> and
+                <a href={sources.syncScript}>sync script</a> explicitly preserve
+                SolDevelo branding and functional modifications while importing
+                Bitnami changes. That history supports genuine derivation, though it
+                also means custom changes need separate review after each sync.
+              </p>
+              <p>
+                Exact historical component roots were not found for Kafka 3.9 and
+                Prometheus 3.0. Their Dockerfiles and runtime material were therefore
+                reviewed directly. Neither contained a malware indicator. Kafka 3.9
+                intentionally substitutes the Apache Kafka distribution; Prometheus
+                3.0 follows the conventional Bitnami-style download and non-root
+                execution pattern.
+              </p>
+            </section>
+
+            <section id="notable-differences" aria-labelledby="notable-differences-title">
+              <p class="eyebrow">Material differences</p>
+              <h2 id="notable-differences-title">Four findings maintainers should evaluate</h2>
+
+              <h3>1. Kafka adds Testcontainers compatibility behavior</h3>
+              <p>
+                SolDevelo adds a
+                <a href={sources.kafkaWrapper}><code>/etc/kafka/docker/run</code> wrapper</a>
+                that enables a Testcontainers mode, supplies local plaintext listener
+                defaults, and delegates to the Bitnami entrypoint. Its
+                <a href={sources.kafkaRun}>Kafka run script</a> also monitors output
+                in that mode to emit a ready message. This is visible compatibility
+                code, not a malware indicator, but it is a meaningful behavioral
+                difference from a stock Bitnami image.
+              </p>
+
+              <h3>2. Kafka 3.9 downloads Apache's distribution</h3>
+              <p>
+                The <a href={`${sources.kafka39Dockerfile}#L45-L55`}>Kafka 3.9 Dockerfile</a>
+                fetches Kafka 3.9.2 and its SHA-512 file from
+                <code>downloads.apache.org</code>, while retaining Bitnami runtime
+                scripts. The checksum detects corruption in transit, but because the
+                payload and checksum come from the same origin it is not independent
+                authentication of that origin.
+              </p>
+
+              <h3>3. MariaDB 13 relaxes certificate verification for its healthcheck</h3>
+              <p>
+                The <a href={sources.mariadbHealthcheck}>MariaDB 13 healthcheck</a>
+                adds <code>--skip-ssl-verify-server-cert</code> when connecting to
+                <code>0.0.0.0</code>. The comment says this accommodates the image's
+                dynamic self-signed certificate while keeping TLS enabled. The change
+                is scoped to <code>mysqladmin</code> health checks, but operators with
+                strict local certificate requirements should account for it.
+              </p>
+
+              <h3>4. The current Kafka publication mixes image media types</h3>
+              <p>
+                Kafka's current amd64 and arm64 manifests declare the OCI manifest
+                media type while referencing a Docker v2 configuration media type.
+                Strict clients can reject that mixed representation; in our snapshot,
+                <code>skopeo inspect docker://soldevelo/kafka:latest</code> failed with
+                <code>invalid mixed OCI image with Docker v2s2 config</code>. Manual
+                inspection of the configuration showed the expected Kafka entrypoint,
+                command, revision, and UID 1001. This is a publication compatibility
+                defect, not evidence of malicious content.
+              </p>
+              <pre><code>current Kafka index
+sha256:1538bd0f8fe1281df475e57a90b969ab622871415c3d3f75294c8c4d8be10f13
+
+linux/amd64
+sha256:09e7caf6bf605d42245a6bca107f05a5875c1e9476a4e18597e03e173d8f6420
+
+linux/arm64
+sha256:2c25bc3a330fa8c399acaa4c708e7a88d38808e1c2b0879b3e95862e695929a6</code></pre>
+            </section>
+
+            <section id="provenance" aria-labelledby="provenance-title">
+              <p class="eyebrow">Distribution security</p>
+              <h2 id="provenance-title">Traceable labels, but no verifiable build chain</h2>
+              <p>
+                Current image configurations label a public source revision, and
+                their commands are consistent with the corresponding Dockerfiles.
+                That is useful traceability. It is not cryptographic evidence that
+                the registry bytes were produced only by that revision.
+              </p>
+              <ul>
+                <li>
+                  The <a href={`${sources.buildWorkflow}#L252-L262`}>publish workflow explicitly sets <code>provenance: false</code></a>.
+                </li>
+                <li>
+                  Registry queries found no OCI referrer, conventional Cosign
+                  signature tag, or attestation tag for any of the 15 current
+                  catalog digests.
+                </li>
+                <li>
+                  <a href={dockerHubApiUrl("postgresql")}>Docker Hub's immutable-tag setting is disabled</a>
+                  across all 15 catalog repositories, so rolling tags can be replaced.
+                </li>
+                <li>
+                  All 40 Dockerfiles start from the mutable
+                  <a href="https://hub.docker.com/r/bitnami/minideb"><code>bitnami/minideb:bookworm</code></a>
+                  tag rather than a digest.
+                </li>
+                <li>
+                  Thirty-seven Dockerfiles run <code>apt-get upgrade</code>, making
+                  the result dependent on repository state at build time.
+                </li>
+                <li>
+                  Seventeen Dockerfiles use committed checksum material. Twenty-three
+                  fetch checksums from the same server as the payload, which does not
+                  protect against compromise of that server.
+                </li>
+                <li>
+                  The workflow installs the current
+                  <a href={`${sources.buildWorkflow}#L127-L130`}><code>yq</code></a> and
+                  <a href={`${sources.buildWorkflow}#L271-L276`}><code>crane</code></a>
+                  releases without verifying a pinned version or checksum.
+                </li>
+                <li>
+                  <a href={`${sources.buildWorkflow}#L125-L171`}>GitHub Actions are selected by moving version tags</a>
+                  instead of immutable action commit digests.
+                </li>
+              </ul>
+              <p>
+                The practical consequence is straightforward: a mutable tag can
+                change without a consumer repository diff, and consumers cannot use
+                a signature or attestation to verify its source and build inputs.
+                Pinning the exact digest prevents silent tag movement, but it does
+                not create missing provenance.
+              </p>
+            </section>
+
+            <section id="static-scans" aria-labelledby="static-scans-title">
+              <p class="eyebrow">Published-layer scans</p>
+              <h2 id="static-scans-title">Useful negative evidence, not a clean bill of health</h2>
+              <p>
+                We used checksum-verified
+                <a href={sources.trivyRelease}>Trivy 0.72.0</a> data against the exact
+                current platform digests. The scan enabled Debian OS-package
+                vulnerability analysis and the secret scanner. It deliberately did
+                not download Trivy's roughly 900 MB Java database, so this report
+                does not claim language-library vulnerability coverage.
+              </p>
+              <p>
+                Every scanned Debian-based image produced OS-package vulnerability
+                findings; severity totals are scanner observations, not proof of
+                exploitability. The scratch-final Prometheus image produced no OS
+                package findings because it has no Debian package database in the
+                final filesystem. No operational secret was identified. Schema
+                Registry produced six identical Stripe publishable-key detections in
+                bundled third-party license text; inspection showed sample text, not
+                an application credential.
+              </p>
+              <p>
+                Values below are finding occurrences for <code>amd64 / arm64</code>,
+                not deduplicated CVEs. MongoDB has one value because its current
+                publication is amd64-only.
+              </p>
+              <div
+                class="table-scroll mt-8 overflow-x-auto rounded-2xl border border-gray-100/15"
+                role="region"
+                aria-label="Trivy findings by image family and architecture"
+                tabindex="0"
+              >
+                <table class="scan-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Family</th>
+                      <th scope="col">Total</th>
+                      <th scope="col">Critical</th>
+                      <th scope="col">High</th>
+                      <th scope="col">Medium</th>
+                      <th scope="col">Low</th>
+                      <th scope="col">Unknown</th>
+                      <th scope="col">Secret hits</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {scanRows.map(([family, total, critical, high, medium, low, unknown, secrets]) => (
+                      <tr>
+                        <th scope="row"><a href={dockerHubTagApiUrl(family, currentTagByFamily.get(family) ?? "latest")}>{family}</a></th>
+                        <td>{total}</td>
+                        <td>{critical}</td>
+                        <td>{high}</td>
+                        <td>{medium}</td>
+                        <td>{low}</td>
+                        <td>{unknown}</td>
+                        <td>{secrets}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p>
+                Architecture pairs generally produced the same totals. The detailed
+                per-family results and scan limitations are retained with the audit
+                notes; maintainers should rescan their exact selected digest under
+                their own severity, exploitability, and exception policy.
+              </p>
+            </section>
+
+            <section id="campaign" aria-labelledby="campaign-title">
+              <p class="eyebrow">Outreach pattern</p>
+              <h2 id="campaign-title">A product migration promoted at bulk scale</h2>
+              <p>
+                In the August 2 snapshot,
+                <a href={sources.campaignSearch}>GitHub search showed 375 pull requests authored by <code>jkondrat-sd</code></a>:
+                321 open, 54 closed, and 22 merged. The
+                <a href={sources.contributorRepositories}>account listed 1,011 public repositories</a>;
+                <a href={sources.contributorRepositoriesApi}>its 100 most recently updated repositories were all forks</a>.
+                The
+                profile <a href={sources.contributor}>names SolDevelo as the company</a>,
+                while <a href={sources.soldeveloProduct}>SolDevelo sells maintenance for these images</a>.
+              </p>
+              <OutreachSnapshotFigure searchHref={sources.campaignSearch} />
+              <p>
+                Those links make the affiliation discoverable and the vendor itself
+                appears genuine. They also mean the recommendations are interested
+                vendor outreach. Repeated, near-identical pull requests are not a
+                substitute for project-specific compatibility testing, threat
+                modeling, or maintainer consent. GitHub's
+                <a href={sources.githubPolicy}>acceptable-use policy addresses excessive automated bulk activity and bulk promotional distribution</a>;
+                GitHub is the appropriate party to decide whether particular activity
+                crosses its enforcement threshold.
+              </p>
+            </section>
+
+            <section id="recommendations" aria-labelledby="recommendations-title">
+              <p class="eyebrow">For maintainers</p>
+              <h2 id="recommendations-title">Treat the migration as a dependency change</h2>
+              <ol>
+                <li>
+                  Do not call these images malware based on the current evidence.
+                  Preserve logs and exact digests if separate compromise evidence exists.
+                </li>
+                <li>
+                  Do not accept a moving <code>:latest</code>, major, or minor tag as
+                  the only identity of a production artifact.
+                </li>
+                <li>
+                  Prefer an official upstream artifact or a reproducible build in a
+                  registry controlled by the consuming project. If selecting
+                  SolDevelo, pin the reviewed architecture or index digest.
+                </li>
+                <li>
+                  Test the selected image's configuration, persistence, upgrades,
+                  health checks, backup and restore, clustering, and failure modes.
+                  Pay particular attention to the documented Kafka and MariaDB differences.
+                </li>
+                <li>
+                  Scan the exact digest with the consuming project's current policy,
+                  including language packages where applicable. A scan of today's
+                  <code>latest</code> does not describe yesterday's deployment.
+                </li>
+                <li>
+                  Request signed images, an attached SBOM, build provenance, immutable
+                  release tags, digest-pinned workflow dependencies, and independently
+                  authenticated downloads from any long-term publisher.
+                </li>
+                <li>
+                  If an image has already been deployed, first record its local
+                  content digest. Do not assume compromise or rotate secrets solely
+                  because it came from this catalog; respond to evidence and exposure.
+                </li>
+              </ol>
+            </section>
+
+            <section id="methodology" aria-labelledby="methodology-title">
+              <p class="eyebrow">Reproduction</p>
+              <h2 id="methodology-title">How to verify the moving parts</h2>
+              <p>
+                The source commit and digests in this report are immutable; campaign
+                counts and registry tags are not. Record the timestamp and resolved
+                digest when repeating the read-only checks.
+              </p>
+              <pre><code># Outreach snapshot
+gh api -X GET search/issues \
+  -f q='type:pr author:jkondrat-sd' --jq '.total_count'
+
+# Public source snapshot
+git clone --filter=blob:none https://github.com/SolDevelo/containers.git
+git -C containers checkout {reviewedRevision}
+
+# Resolve and inspect a current image without running it
+skopeo inspect --raw docker://docker.io/soldevelo/postgresql:latest
+skopeo inspect docker://docker.io/soldevelo/postgresql@sha256:83c095844f257ca5595b77faa181c04f1b6ed47cbe5495693d6f93316ca54434
+
+# Query attached OCI artifacts for an exact subject digest
+oras discover docker.io/soldevelo/postgresql@sha256:83c095844f257ca5595b77faa181c04f1b6ed47cbe5495693d6f93316ca54434
+
+# Static scan; add the language databases your policy requires
+trivy image --scanners vuln,secret \
+  docker.io/soldevelo/postgresql@sha256:83c095844f257ca5595b77faa181c04f1b6ed47cbe5495693d6f93316ca54434</code></pre>
+              <p>
+                Our review additionally walked each Dockerfile's base images,
+                package installation, downloads, checksum sources, copied files,
+                user, entrypoint, and command; compared source blobs across
+                <a href={sources.bitnamiSource}>Bitnami history</a>; inspected the
+                <a href={sources.buildWorkflow}>build-and-publish workflow</a>; queried
+                Docker Hub repository settings and OCI referrers; and scanned every
+                current platform manifest statically. No container was started.
+              </p>
+            </section>
+
+            <section id="sources" aria-labelledby="sources-title">
+              <p class="eyebrow">Primary sources</p>
+              <h2 id="sources-title">Evidence and further reading</h2>
+              <ul class="source-list">
+                <li><a href={sources.soldeveloRevision}>Reviewed SolDevelo source revision</a></li>
+                <li><a href={sources.catalogTree}>Complete reviewed image catalog source</a></li>
+                <li><a href={sources.buildWorkflow}>Reviewed build-and-publish workflow</a></li>
+                <li><a href={sources.syncWorkflow}>Reviewed Bitnami synchronization workflow</a></li>
+                <li><a href={sources.bitnamiSource}>Bitnami container source and history</a></li>
+                <li><a href={sources.bitnamiAnnouncement}>Bitnami's public catalog announcement</a></li>
+                <li><a href={sources.soldeveloProduct}>SolDevelo's container maintenance product page</a></li>
+                <li><a href={sources.dockerHubNamespace}>SolDevelo's Docker Hub namespace</a></li>
+                <li><a href={sources.campaignSearch}>GitHub search for the contributor's pull requests</a></li>
+                <li><a href={sources.githubPolicy}>GitHub Acceptable Use Policies</a></li>
+                <li><a href={sources.trivyRelease}>Trivy 0.72.0 release</a></li>
+              </ul>
+            </section>
+
+            <section id="corrections" aria-labelledby="corrections-title">
+              <p class="eyebrow">Corrections and response</p>
+              <h2 id="corrections-title">This is a dated technical snapshot</h2>
+              <p>
+                Registry contents, pull-request counts, source, and vulnerability
+                data can change. If the publisher, contributor, or another maintainer
+                can provide signatures, provenance, SBOMs, or factual corrections
+                that were unavailable during this review, contact
+                <a href="mailto:contact@obiente.com">contact@obiente.com</a>.
+                Substantiated errors will be corrected and material updates recorded.
+              </p>
+            </section>
+          </div>
+
+          <aside class="hidden lg:block">
+            <nav class="sticky top-8 rounded-2xl border border-gray-100/15 bg-gray-100/[0.025] p-6" aria-label="Report contents">
+              <p class="text-xs font-semibold uppercase tracking-[0.14em] text-gray-100/45">
+                In this report
+              </p>
+              <ol class="mt-5 space-y-3 text-sm text-gray-100/65">
+                {contents.map(([href, label]) => (
+                  <li><a href={href}>{label}</a></li>
+                ))}
+              </ol>
+            </nav>
+          </aside>
+        </div>
+      </div>
+    </article>
+  </main>
+  <Footer />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    datePublished: publishedTime,
+    dateModified: publishedTime,
+    url: canonicalUrl,
+    mainEntityOfPage: canonicalUrl,
+    image: "https://obiente.org/image.png",
+    timeRequired: "PT15M",
+    keywords: "SolDevelo, Bitnami, container security, supply chain, Docker images, provenance, GitHub outreach",
+    author: {
+      "@type": "Organization",
+      name: "Obiente",
+      url: "https://obiente.org",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Obiente",
+      url: "https://obiente.org",
+    },
+  })}>
+  </script>
+</Layout>
+
+<style>
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 50;
+    transform: translateY(-200%);
+    border-radius: 0.5rem;
+    background: rgb(243 244 246);
+    padding: 0.65rem 0.9rem;
+    color: rgb(3 7 18);
+    font-size: 0.875rem;
+    font-weight: 650;
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .report-body section {
+    scroll-margin-top: 2rem;
+  }
+
+  .report-body section + section {
+    margin-top: 5rem;
+    border-top: 1px solid rgb(243 244 246 / 0.14);
+    padding-top: 5rem;
+  }
+
+  .report-body :global(h2) {
+    margin-top: 0.7rem;
+    max-width: 46rem;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 650;
+    line-height: 1.12;
+    color: rgb(243 244 246);
+  }
+
+  .report-body :global(h3) {
+    margin-top: 2.5rem;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: rgb(243 244 246);
+  }
+
+  .report-body :global(p),
+  .report-body :global(li) {
+    color: rgb(243 244 246 / 0.72);
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+
+  .report-body :global(section > p),
+  .report-body :global(section > ul),
+  .report-body :global(section > ol) {
+    max-width: 48rem;
+  }
+
+  .report-body :global(p) {
+    margin-top: 1.35rem;
+  }
+
+  .report-body :global(ul),
+  .report-body :global(ol) {
+    margin-top: 1.25rem;
+    padding-left: 1.35rem;
+  }
+
+  .report-body :global(ul) {
+    list-style: disc;
+  }
+
+  .report-body :global(ol) {
+    list-style: decimal;
+  }
+
+  .report-body :global(li + li) {
+    margin-top: 0.55rem;
+  }
+
+  .report-body :global(a) {
+    color: rgb(196 181 253);
+    text-decoration-line: underline;
+    text-decoration-color: rgb(196 181 253 / 0.4);
+    text-underline-offset: 0.22rem;
+  }
+
+  .report-body :global(a:hover) {
+    color: rgb(221 214 254);
+  }
+
+  .article-lede :global(a) {
+    color: rgb(221 214 254);
+    text-decoration-line: underline;
+    text-decoration-color: rgb(196 181 253 / 0.4);
+    text-underline-offset: 0.22rem;
+  }
+
+  .article-lede :global(a:hover) {
+    color: rgb(237 233 254);
+  }
+
+  .report-body :global(code) {
+    border-radius: 0.3rem;
+    background: rgb(243 244 246 / 0.08);
+    padding: 0.12rem 0.35rem;
+    color: rgb(221 214 254);
+    font-size: 0.92em;
+  }
+
+  .report-body :global(pre) {
+    margin-top: 1.5rem;
+    overflow-x: auto;
+    border: 1px solid rgb(243 244 246 / 0.14);
+    border-radius: 1rem;
+    background: rgb(2 6 23 / 0.7);
+    padding: 1.25rem;
+  }
+
+  .report-body :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: rgb(209 213 219);
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
+  .eyebrow {
+    margin: 0 !important;
+    color: rgb(196 181 253) !important;
+    font-size: 0.75rem !important;
+    font-weight: 650;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .callout {
+    margin-top: 1.75rem;
+    border-left: 3px solid rgb(251 191 36 / 0.75);
+    border-radius: 0 0.75rem 0.75rem 0;
+    background: rgb(251 191 36 / 0.06);
+    padding: 0.25rem 1.35rem 1.4rem;
+  }
+
+  .callout-primary {
+    border-left-color: rgb(167 139 250 / 0.85);
+    background: rgb(124 58 237 / 0.09);
+  }
+
+  .verdict {
+    margin-top: 2rem;
+    border-top: 1px solid rgb(243 244 246 / 0.28);
+    border-bottom: 1px solid rgb(243 244 246 / 0.14);
+    padding: 1.6rem 0 1.8rem;
+  }
+
+  .verdict-label {
+    margin: 0 !important;
+    color: rgb(251 191 36) !important;
+    font-size: 0.72rem !important;
+    font-weight: 650;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .verdict-text {
+    margin-top: 0.65rem !important;
+    max-width: 48rem;
+    color: rgb(243 244 246 / 0.86) !important;
+    font-size: clamp(1.12rem, 2vw, 1.35rem) !important;
+    line-height: 1.65 !important;
+  }
+
+  .quick-summary {
+    display: grid;
+    gap: 2.75rem;
+    margin-top: 2.75rem;
+    margin-bottom: 4rem;
+  }
+
+  .summary-column :global(h3) {
+    margin-top: 0;
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+  }
+
+  .summary-column :global(ul),
+  .summary-column :global(ol) {
+    margin-top: 1.6rem;
+  }
+
+  .summary-column :global(li + li) {
+    margin-top: 1.25rem;
+  }
+
+  .quick-summary + p {
+    margin-top: 0 !important;
+  }
+
+  .mobile-contents {
+    margin-bottom: 3rem;
+    border-top: 1px solid rgb(243 244 246 / 0.2);
+    border-bottom: 1px solid rgb(243 244 246 / 0.14);
+    padding: 1rem 0;
+  }
+
+  .mobile-contents summary {
+    cursor: pointer;
+    color: rgb(221 214 254);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .mobile-contents :global(ol) {
+    columns: 2;
+    gap: 2rem;
+    margin-bottom: 0;
+    padding-left: 1.1rem;
+  }
+
+  .mobile-contents :global(li) {
+    break-inside: avoid;
+    font-size: 0.84rem;
+    line-height: 1.55;
+  }
+
+  @media (min-width: 48rem) {
+    .quick-summary {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 4.5rem;
+    }
+  }
+
+  table {
+    width: 100%;
+    min-width: 40rem;
+    border-collapse: collapse;
+  }
+
+  .table-scroll {
+    overscroll-behavior-inline: contain;
+  }
+
+  .table-scroll:focus-visible {
+    outline-offset: 0.3rem;
+  }
+
+  .catalog-table {
+    min-width: 76rem;
+  }
+
+  .scan-table {
+    min-width: 68rem;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid rgb(243 244 246 / 0.12);
+    padding: 1rem 1.25rem;
+    text-align: left;
+    vertical-align: top;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  tr:last-child th,
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  th {
+    color: rgb(243 244 246 / 0.62);
+    font-weight: 500;
+  }
+
+  td {
+    color: rgb(243 244 246);
+    font-weight: 600;
+  }
+
+  .catalog-table :global(code) {
+    display: inline-block;
+    max-width: 34rem;
+    overflow-wrap: anywhere;
+    font-size: 0.72rem;
+  }
+
+  .source-list :global(li) {
+    overflow-wrap: anywhere;
+  }
+
+  aside :global(a) {
+    transition: color 160ms ease;
+  }
+
+  aside :global(a:hover) {
+    color: rgb(221 214 254);
+  }
+
+  @media (max-width: 30rem) {
+    .mobile-contents :global(ol) {
+      columns: 1;
+    }
+  }
+</style>

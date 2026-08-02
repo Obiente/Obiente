@@ -1,0 +1,136 @@
+---
+export interface Props {
+  catalogHref: string;
+}
+
+const { catalogHref } = Astro.props;
+---
+
+<figure class="evidence-figure" aria-labelledby="review-scope-caption">
+  <div
+    class="figure-scroll"
+    role="region"
+    aria-label="Audit scope diagram"
+    tabindex="0"
+  >
+    <svg
+      viewBox="0 0 980 190"
+      role="img"
+      aria-labelledby="review-scope-title review-scope-description"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title id="review-scope-title">Review scope</title>
+      <desc id="review-scope-description">
+        The review covered 15 image families, 40 versioned Dockerfiles,
+        1,080 source and runtime files, 15 current image digests, and 29 Linux
+        platform manifests.
+      </desc>
+
+      <line class="scope-line" x1="70" y1="82" x2="910" y2="82" />
+
+      <g transform="translate(70 82)">
+        <circle class="scope-node" r="7" />
+        <text class="scope-value" x="0" y="-30" text-anchor="middle">15</text>
+        <text class="scope-label" x="0" y="39" text-anchor="middle">image families</text>
+      </g>
+
+      <g transform="translate(280 82)">
+        <circle class="scope-node" r="7" />
+        <text class="scope-value" x="0" y="-30" text-anchor="middle">40</text>
+        <text class="scope-label" x="0" y="39" text-anchor="middle">versioned</text>
+        <text class="scope-label" x="0" y="60" text-anchor="middle">Dockerfiles</text>
+      </g>
+
+      <g transform="translate(490 82)">
+        <circle class="scope-node scope-node-emphasis" r="7" />
+        <text class="scope-value" x="0" y="-30" text-anchor="middle">1,080</text>
+        <text class="scope-label" x="0" y="39" text-anchor="middle">source and runtime</text>
+        <text class="scope-label" x="0" y="60" text-anchor="middle">files</text>
+      </g>
+
+      <g transform="translate(700 82)">
+        <circle class="scope-node" r="7" />
+        <text class="scope-value" x="0" y="-30" text-anchor="middle">15</text>
+        <text class="scope-label" x="0" y="39" text-anchor="middle">current image</text>
+        <text class="scope-label" x="0" y="60" text-anchor="middle">digests</text>
+      </g>
+
+      <g transform="translate(910 82)">
+        <circle class="scope-node" r="7" />
+        <text class="scope-value" x="0" y="-30" text-anchor="middle">29</text>
+        <text class="scope-label" x="0" y="39" text-anchor="middle">Linux platform</text>
+        <text class="scope-label" x="0" y="60" text-anchor="middle">manifests</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption id="review-scope-caption">
+    Scope at the <a href={catalogHref}>reviewed source revision</a>. Published-image
+    counts refer to the <a href="#published-images">exact current digests</a>
+    recorded on August 2, 2026.
+  </figcaption>
+</figure>
+
+<style>
+  .evidence-figure {
+    margin-top: 2rem;
+    max-width: 54rem;
+    border-top: 1px solid rgb(243 244 246 / 0.2);
+    border-bottom: 1px solid rgb(243 244 246 / 0.14);
+    padding: 1.25rem 0 1rem;
+  }
+
+  .figure-scroll {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+
+  svg {
+    display: block;
+    width: 100%;
+    min-width: 46rem;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .scope-line {
+    stroke: rgb(196 181 253 / 0.35);
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .scope-node {
+    fill: rgb(3 7 18);
+    stroke: rgb(196 181 253 / 0.8);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .scope-node-emphasis {
+    fill: rgb(196 181 253);
+  }
+
+  .scope-value {
+    fill: rgb(243 244 246);
+    font-size: 24px;
+    font-weight: 650;
+  }
+
+  .scope-label {
+    fill: rgb(243 244 246 / 0.68);
+    font-size: 13px;
+  }
+
+  figcaption {
+    margin-top: 0.75rem;
+    color: rgb(243 244 246 / 0.55);
+    font-size: 0.78rem;
+    line-height: 1.6;
+  }
+
+  figcaption a {
+    color: rgb(196 181 253);
+    text-decoration: underline;
+    text-decoration-color: rgb(196 181 253 / 0.4);
+    text-underline-offset: 0.2rem;
+  }
+</style>
