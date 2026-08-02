@@ -1,0 +1,77 @@
+---
+import Section from "../components/Section.astro";
+import Container from "../components/Container.astro";
+
+const paths = [
+  {
+    number: "01",
+    title: "Report an issue",
+    description: "Found a bug or a rough edge? A reproducible report helps us decide what matters next.",
+    link: "https://github.com/Obiente/nc-native/issues",
+    action: "Open the issue tracker",
+  },
+  {
+    number: "02",
+    title: "Test an alpha",
+    description: "Try a Nextcloud Native testing release and tell us where the experience holds up or breaks down.",
+    link: "https://github.com/Obiente/nc-native/releases",
+    action: "Get a testing release",
+  },
+  {
+    number: "03",
+    title: "Contribute code or docs",
+    description: "Start with the contributor guide, project boundaries, and work that is ready for collaboration.",
+    link: "https://github.com/Obiente/nc-native/blob/main/CONTRIBUTING.md",
+    action: "Read the contributor guide",
+  },
+  {
+    number: "04",
+    title: "Help translate",
+    description: "Make open tools easier to use across languages and communities.",
+    link: "https://translate.obiente.org",
+    action: "Open Obiente Translate",
+  },
+];
+---
+
+<Section id="contribute" spacing="xl" class="bg-gray-100/[0.025]">
+  <Container size="xl">
+    <header class="grid gap-6 border-b border-gray-100/20 pb-8 md:grid-cols-[1fr_1fr] md:items-end">
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-violet-300">
+          Contribute
+        </p>
+        <h2 class="text-4xl font-bold text-gray-100 md:text-5xl">
+          Choose a useful way in
+        </h2>
+      </div>
+      <p class="max-w-xl text-base leading-relaxed text-gray-100/60 md:justify-self-end">
+        You do not need to arrive with a finished feature. Testing, clear bug
+        reports, documentation, translation, and focused code changes all move
+        the work forward.
+      </p>
+    </header>
+
+    <div>
+      {paths.map((path) => (
+        <a
+          href={path.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="group grid gap-4 border-b border-gray-100/15 py-7 md:grid-cols-[4rem_0.8fr_1.3fr_auto] md:items-center"
+        >
+          <span class="text-sm font-semibold text-violet-300">{path.number}</span>
+          <span class="text-xl font-semibold text-gray-100 group-hover:text-violet-200">
+            {path.title}
+          </span>
+          <span class="max-w-2xl text-sm leading-relaxed text-gray-100/55">
+            {path.description}
+          </span>
+          <span class="text-sm text-gray-100/70 underline decoration-gray-100/30 underline-offset-4 group-hover:text-violet-200">
+            {path.action} →
+          </span>
+        </a>
+      ))}
+    </div>
+  </Container>
+</Section>

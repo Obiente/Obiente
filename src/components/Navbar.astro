@@ -5,28 +5,18 @@ import Typography from "./Typography.astro";
 <div class="max-w-7xl mx-auto px-4">
   <nav class="flex items-center justify-between py-4">
     <div class="flex-1">
-      <Typography as="h1" variant="heading">Obiente</Typography>
+      <a href="/" aria-label="Obiente home">
+        <Typography as="span" variant="heading">Obiente</Typography>
+      </a>
     </div>
-    
-    <!-- <div class="flex justify-center">
-      <div class="relative w-72 flex bg-gray-100/5 px-4 py-1 rounded-full border border-gray-100/10 overflow-hidden group text-gray-100/50 font-light">
-        <div
-          class="absolute w-full inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-          style="box-shadow: 0 0 10px -3px rgba(255, 255, 255, 0.15); 
-                    mask: radial-gradient(60% 200% at var(--mouse-x, 50%) var(--mouse-y, 50%), black, transparent 70%);
-                    -webkit-mask: radial-gradient(60% 200% at var(--mouse-x, 50%) var(--mouse-y, 50%), black, transparent 70%);
-                    border: 1px solid rgba(255, 255, 255, 0.2);">
-        </div>
-        <div class="grid grid-cols-2 gap-2 w-full mx-auto">
-          <a href="/" class="relative z-10 hover:text-gray-100/75 text-center transition-colors duration-300">
-            Home
-          </a>
-          <a href="#" class="relative z-10 hover:text-gray-100/75 text-center transition-colors duration-300">
-            Contact
-          </a>
-        </div>
-      </div>
-    </div> -->
+
+    <div class="hidden md:flex items-center justify-center gap-7 text-sm text-gray-100/60">
+      <a href="/#projects" class="hover:text-gray-100 transition-colors duration-300">Projects</a>
+      <a href="/#about" class="hover:text-gray-100 transition-colors duration-300">About</a>
+      <a href="/#contribute" class="hover:text-gray-100 transition-colors duration-300">Contribute</a>
+      <a href="/#team" class="hover:text-gray-100 transition-colors duration-300">Team</a>
+      <a href="/contact" class="hover:text-gray-100 transition-colors duration-300">Contact</a>
+    </div>
     
     <div class="flex-1 flex justify-end gap-x-5">
       <a
@@ -67,20 +57,3 @@ import Typography from "./Typography.astro";
     </div>
   </nav>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const navSection = document.querySelector(".group") as HTMLElement;
-
-    if (navSection) {
-      navSection.addEventListener("mousemove", (e: MouseEvent) => {
-        const rect = navSection.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-
-        navSection.style.setProperty("--mouse-x", `${x}%`);
-        navSection.style.setProperty("--mouse-y", `${y}%`);
-      });
-    }
-  });
-</script>

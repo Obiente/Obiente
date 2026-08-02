@@ -1,0 +1,21 @@
+---
+import { techIcons, type TechIconName } from "./tech-icons";
+
+export interface Props {
+  name: TechIconName;
+  class?: string;
+}
+
+const { name, class: className = "w-4 h-4" } = Astro.props as Props;
+const path = techIcons[name];
+---
+
+<svg
+  class={className}
+  viewBox="0 0 24 24"
+  fill="currentColor"
+  aria-hidden="true"
+  focusable="false"
+>
+  <path d={path}></path>
+</svg>

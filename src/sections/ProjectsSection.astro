@@ -1,31 +1,216 @@
 ---
 import Section from "../components/Section.astro";
 import Container from "../components/Container.astro";
-import SectionHeader from "../components/SectionHeader.astro";
-import ItemCard from "../components/ItemCard.astro";
+import TechIcon from "../components/icons/TechIcon.astro";
+import type { TechIconName } from "../components/icons/tech-icons";
+
+interface ProjectLink {
+  label: string;
+  href: string;
+}
+
+interface Project {
+  name: string;
+  category: string;
+  description: string;
+  technologies: TechIconName[];
+  links: ProjectLink[];
+}
+
+const nextcloudTechnologies: TechIconName[] = [
+  "Kotlin",
+  "Compose Multiplatform",
+  "Rust",
+];
+
+const nextcloudPlatforms: TechIconName[] = [
+  "Android",
+  "iOS",
+  "Linux",
+  "macOS",
+  "Windows",
+];
+
+const nextcloudLinks = [
+  {
+    label: "Testing releases",
+    detail: "Try the current alpha builds",
+    href: "https://github.com/Obiente/nc-native/releases",
+  },
+  {
+    label: "Roadmap",
+    detail: "See what is working and what comes next",
+    href: "https://nc-native.obiente.dev/roadmap/",
+  },
+  {
+    label: "Source",
+    detail: "Read the code and technical documentation",
+    href: "https://github.com/Obiente/nc-native",
+  },
+  {
+    label: "Contribute",
+    detail: "Find a useful way to help",
+    href: "https://github.com/Obiente/nc-native/blob/main/CONTRIBUTING.md",
+  },
+];
+
+const projects: Project[] = [
+  {
+    name: "Obiente Cloud",
+    category: "Infrastructure",
+    description:
+      "A distributed platform for deploying and managing applications across multiple nodes.",
+    technologies: ["Go", "Vue", "TypeScript", "Docker"],
+    links: [
+      { label: "Open project", href: "https://obiente.cloud" },
+      { label: "Source", href: "https://github.com/Obiente/Cloud" },
+    ],
+  },
+  {
+    name: "Uppe.",
+    category: "Monitoring",
+    description:
+      "Distributed uptime monitoring built around independent, signed checks from multiple peers.",
+    technologies: ["Astro", "TypeScript", "Rust"],
+    links: [{ label: "Source", href: "https://github.com/Obiente/Uppe." }],
+  },
+  {
+    name: "Obiente UI",
+    category: "Developer tools",
+    description:
+      "A Vue 3 component system for accessible, themeable interfaces with shared foundations.",
+    technologies: ["Vue", "TypeScript", "Tailwind CSS", "Astro"],
+    links: [{ label: "Source", href: "https://github.com/Obiente/ui" }],
+  },
+];
 ---
 
-<Section id="projects" spacing="lg">
+<Section id="projects" spacing="xl">
   <Container size="xl">
-    <SectionHeader
-      title="Our Projects"
-      subtitle="Check out what we've been building. Each project started because people needed it."
-      align="center"
-    />
+    <header class="border-b border-gray-100/20 pb-8">
+      <div>
+        <p class="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-violet-300">
+          Active work
+        </p>
+        <h2 class="text-4xl font-bold text-gray-100 md:text-5xl">
+          What we're building now
+        </h2>
+      </div>
+    </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-      <ItemCard
-        title="Uppe."
-        description="Monitoring that doesn't let you down. Eliminate single points of failure with distributed uptime monitoring across thousands of global peers."
-        techs={["Astro", "TypeScript", "Rust"]}
-        cto={{ link: "https://uppe.rs", text: "Learn more" }}
-      />
-      <ItemCard
-        title="Obiente UI"
-        description="A highly themeable, flexible, and scalable UI component system for building modern web applications with consistency and style."
-        techs={["Vue", "Astro"]}
-        cto={{ link: "https://ui.obiente.com", text: "Explore Components" }}
-      />
+    <article class="grid gap-12 py-12 lg:grid-cols-[minmax(0,1.5fr)_minmax(18rem,0.75fr)] lg:gap-16">
+      <div>
+        <div class="mb-5 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <p class="text-sm font-semibold uppercase tracking-[0.14em] text-violet-300">
+            Flagship project
+          </p>
+          <span class="border border-violet-300/50 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-violet-200">
+            Active alpha
+          </span>
+        </div>
+
+        <h3 class="text-4xl font-bold text-gray-100 md:text-6xl">
+          Nextcloud Native
+        </h3>
+        <p class="mt-6 max-w-3xl text-lg leading-relaxed text-gray-100/70">
+          One coherent, genuinely native workspace for your whole Nextcloud.
+          The project is building toward a consistent experience across Files
+          and the wider app ecosystem without embedding remote web pages.
+        </p>
+
+        <div class="mt-10 grid gap-8 sm:grid-cols-2">
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-gray-100/45">
+              Built with
+            </p>
+            <ul class="flex flex-wrap gap-x-5 gap-y-3">
+              {nextcloudTechnologies.map((technology) => (
+                <li class="flex items-center gap-2 text-sm text-gray-100/75">
+                  <TechIcon name={technology} class="h-4 w-4 shrink-0" />
+                  {technology}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p class="mb-4 text-xs font-semibold uppercase tracking-[0.14em] text-gray-100/45">
+              Platform direction
+            </p>
+            <ul class="flex flex-wrap gap-x-5 gap-y-3">
+              {nextcloudPlatforms.map((platform) => (
+                <li class="flex items-center gap-2 text-sm text-gray-100/75">
+                  <TechIcon name={platform} class="h-4 w-4 shrink-0" />
+                  {platform}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <nav aria-label="Nextcloud Native project links" class="border-t border-gray-100/20 lg:border-l lg:border-t-0 lg:pl-10">
+        {nextcloudLinks.map((link) => (
+          <a
+            href={link.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group grid grid-cols-[1fr_auto] gap-4 border-b border-gray-100/15 py-5 first:pt-6 lg:first:pt-0"
+          >
+            <span>
+              <span class="block font-semibold text-gray-100 group-hover:text-violet-200">
+                {link.label}
+              </span>
+              <span class="mt-1 block text-sm leading-relaxed text-gray-100/50">
+                {link.detail}
+              </span>
+            </span>
+            <span aria-hidden="true" class="pt-1 text-violet-300">→</span>
+          </a>
+        ))}
+      </nav>
+    </article>
+
+    <div class="border-t border-gray-100/20">
+      <div class="grid gap-2 border-b border-gray-100/15 py-5 text-xs font-semibold uppercase tracking-[0.14em] text-gray-100/40 md:grid-cols-[0.7fr_1.5fr_1fr_0.8fr]">
+        <span>Project</span>
+        <span class="hidden md:block">Purpose</span>
+        <span class="hidden md:block">Built with</span>
+        <span class="hidden md:block">Links</span>
+      </div>
+
+      {projects.map((project) => (
+        <article class="grid gap-5 border-b border-gray-100/15 py-8 md:grid-cols-[0.7fr_1.5fr_1fr_0.8fr] md:items-start">
+          <div>
+            <h3 class="text-xl font-semibold text-gray-100">{project.name}</h3>
+            <p class="mt-1 text-xs uppercase tracking-[0.12em] text-gray-100/40">
+              {project.category}
+            </p>
+          </div>
+          <p class="max-w-xl text-sm leading-relaxed text-gray-100/60">
+            {project.description}
+          </p>
+          <ul class="flex flex-wrap gap-x-4 gap-y-2">
+            {project.technologies.map((technology) => (
+              <li class="flex items-center gap-2 text-xs text-gray-100/65">
+                <TechIcon name={technology} class="h-3.5 w-3.5 shrink-0" />
+                {technology}
+              </li>
+            ))}
+          </ul>
+          <div class="flex flex-wrap gap-x-5 gap-y-2 md:flex-col md:items-start">
+            {project.links.map((link) => (
+              <a
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-sm text-violet-300 underline decoration-violet-300/40 underline-offset-4 hover:text-violet-200"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </article>
+      ))}
     </div>
   </Container>
 </Section>

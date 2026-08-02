@@ -8,8 +8,8 @@ export interface Props {
 }
 
 const {
-  title = "Obiente - Open source tools that prioritize users instead of profits",
-  description = "O bien, te respalda Obiente. We build completely free, open-source software that actually serves users instead of shareholders. From distributed monitoring to UI components, our community-driven tools solve real problems without hidden costs or vendor lock-in.",
+  title = "Obiente - Built for People, Not Profit",
+  description = "Obiente builds free, open-source tools that serve people instead of shareholders, including Nextcloud Native, Obiente Cloud, distributed monitoring, and interface tools.",
   image = "/image.png",
 } = Astro.props;
 
@@ -53,7 +53,7 @@ const socialImageURL = Astro.site ? new URL(image, Astro.site) : image;
     <meta name="author" content="Obiente" />
     <meta
       name="keywords"
-      content="obiente, open source, free software, community driven, AGPL license, distributed monitoring, ui components, alternative to corporate tools"
+      content="Obiente, open source, Nextcloud Native, Nextcloud client, Obiente Cloud, self-hosting, distributed monitoring, user control"
     />
 
     <link rel="preconnect" href="https://fonts.bunny.net" />
@@ -63,20 +63,19 @@ const socialImageURL = Astro.site ? new URL(image, Astro.site) : image;
     <slot />
 
     <!-- Structured Data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Obiente",
-        "description": "O bien, te respalda Obiente. Open source tools that prioritize users over profits.",
-        "url": "https://obiente.com",
-        "logo": "https://obiente.com/image.png",
-        "sameAs": ["https://github.com/Obiente"],
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "email": "support@obiente.com"
-        }
-      }
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Obiente",
+      description: "Free, open-source tools built to serve people instead of profit.",
+      url: "https://obiente.org",
+      logo: "https://obiente.org/image.png",
+      sameAs: ["https://github.com/Obiente", "https://x.com/ObienteX"],
+      contactPoint: {
+        "@type": "ContactPoint",
+        email: "contact@obiente.com",
+      },
+    })}>
     </script>
   </body>
 </html>

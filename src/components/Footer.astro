@@ -2,31 +2,36 @@
 import Typography from "./Typography.astro";
 ---
 
-<footer class="relative bg-custom-radial-2 py-16 px-8 rounded-t-3xl">
+<footer class="relative border-t border-gray-100/20 bg-gray-100/[0.025] py-16 px-8">
   <div class="max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
       <div class="space-y-4">
         <Typography as="h3" variant="subheading">Obiente</Typography>
         <Typography variant="small" class="text-gray-400">
           Building tools that don't cost anything and belong to the community.
-          Transparent, accessible, and designed for the people who actually use
-          them.
+          Transparent, accessible, and built for people, not profit.
         </Typography>
         <div class="flex space-x-4">
           <a
             href="https://x.com/ObienteX"
             class="text-gray-400 hover:text-gray-100 transition-colors duration-300"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Follow Obiente on X"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <title>Twitter</title>
+              <title>X</title>
               <path
                 d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"
               ></path>
             </svg>
           </a>
           <a
-            href="https://discord.gg/ukRVEPGr7C"
+            href="/join"
             class="text-gray-400 hover:text-gray-100 transition-colors duration-300"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Join the Obiente Discord community"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <title>Discord</title>
@@ -38,6 +43,9 @@ import Typography from "./Typography.astro";
           <a
             href="https://github.com/Obiente"
             class="text-gray-400 hover:text-gray-100 transition-colors duration-300"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit Obiente on GitHub"
           >
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
               <title>GitHub</title>
@@ -56,21 +64,21 @@ import Typography from "./Typography.astro";
         <ul class="space-y-2">
           <li>
             <a
-              href="#"
+              href="/"
               class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
               >Home</a
             >
           </li>
           <li>
             <a
-              href="#about"
+              href="/#about"
               class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
               >About</a
             >
           </li>
           <li>
             <a
-              href="#projects"
+              href="/#projects"
               class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
               >Projects</a
             >
@@ -80,7 +88,15 @@ import Typography from "./Typography.astro";
               href="https://github.com/obiente"
               target="_blank"
               class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
-              >Github</a
+              rel="noopener noreferrer"
+              >GitHub</a
+            >
+          </li>
+          <li>
+            <a
+              href="/contact"
+              class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
+              >Contact</a
             >
           </li>
         </ul>
@@ -142,11 +158,15 @@ import Typography from "./Typography.astro";
         <div class="flex space-x-6">
           <a
             href="https://github.com/Obiente/policies/blob/main/CONTRIBUTING-DATA.md"
+            target="_blank"
+            rel="noopener noreferrer"
             class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
             >Contributor Policy</a
           >
           <a
             href="https://github.com/Obiente/policies/blob/main/DATA_POLICY.md"
+            target="_blank"
+            rel="noopener noreferrer"
             class="text-gray-400 hover:text-gray-100 transition-colors duration-300 text-sm"
             >Data Policy</a
           >

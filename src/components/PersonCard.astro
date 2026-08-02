@@ -1,6 +1,5 @@
 ---
 import Typography from "./Typography.astro";
-import Card from "./Card.astro";
 
 export interface Props {
   name: string;
@@ -12,11 +11,11 @@ export interface Props {
 const { name, image, description, role } = Astro.props as Props;
 ---
 
-<Card class="flex flex-col">
+<article class="flex h-full flex-col border-t border-gray-100/20 pt-7">
   <img
     src={image}
     alt={`${name} profile`}
-    class="w-20 h-20 rounded-full mb-6 group-hover:scale-105 transition-transform duration-300"
+    class="mb-6 h-20 w-20 rounded-full"
   />
   <div class="flex flex-col justify-between flex-1 gap-6">
     <span>
@@ -25,9 +24,9 @@ const { name, image, description, role } = Astro.props as Props;
     </span>
     <Typography
       variant="small"
-      class="bg-gray-100/10 w-fit text-nowrap px-3 py-2 rounded-full"
+      class="w-fit text-nowrap text-violet-300"
     >
       {role}
     </Typography>
   </div>
-</Card>
+</article>

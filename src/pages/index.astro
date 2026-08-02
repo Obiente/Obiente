@@ -2,6 +2,7 @@
 import AboutSection from "../sections/AboutSection.astro";
 import DataPolicySection from "../sections/DataPolicySection.astro";
 import ProjectsSection from "../sections/ProjectsSection.astro";
+import ContributeSection from "../sections/ContributeSection.astro";
 import TeamSection from "../sections/TeamSection.astro";
 import Footer from "../components/Footer.astro";
 import Navbar from "../components/Navbar.astro";
@@ -13,10 +14,11 @@ import Layout from "../layouts/Layout.astro";
   <Navbar />
   <Welcome />
   <div class="space-y-0">
-    <AboutSection />
-    <DataPolicySection />
     <ProjectsSection />
+    <AboutSection />
+    <ContributeSection />
     <TeamSection />
+    <DataPolicySection />
   </div>
   <Footer />
 </Layout>
